@@ -2,95 +2,79 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap');
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
-
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
-
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
-
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
-
-    --radius: 0.5rem;
-
-    --sidebar-background: 0 0% 98%;
-
-    --sidebar-foreground: 240 5.3% 26.1%;
-
-    --sidebar-primary: 240 5.9% 10%;
-
-    --sidebar-primary-foreground: 0 0% 98%;
-
-    --sidebar-accent: 240 4.8% 95.9%;
-
-    --sidebar-accent-foreground: 240 5.9% 10%;
-
-    --sidebar-border: 220 13% 91%;
-
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --background: 200 6% 95%;
+    --foreground: 0 0% 10%;
+    
+    --card: 200 6% 98%;
+    --card-foreground: 0 0% 10%;
+    
+    --popover: 200 6% 98%;
+    --popover-foreground: 0 0% 10%;
+    
+    --primary: 200 5% 10%;
+    --primary-foreground: 200 6% 95%;
+    
+    --secondary: 200 5% 90%;
+    --secondary-foreground: 0 0% 10%;
+    
+    --muted: 200 5% 88%;
+    --muted-foreground: 0 0% 45%;
+    
+    --accent: 200 5% 85%;
+    --accent-foreground: 0 0% 10%;
+    
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+    
+    --border: 200 5% 82%;
+    --input: 200 5% 82%;
+    --ring: 200 5% 30%;
+    
+    --radius: 0.25rem;
+    
+    --concrete: 0 0% 55%;
+    --grid-color: 0 0% 0%;
+    --glass-bg: 200 6% 98% / 0.8;
+    --shadow-color: 0 0% 0% / 0.15;
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --background: 200 8% 11%;
+    --foreground: 40 6% 95%;
+    
+    --card: 200 8% 14%;
+    --card-foreground: 40 6% 95%;
+    
+    --popover: 200 8% 14%;
+    --popover-foreground: 40 6% 95%;
+    
+    --primary: 40 6% 95%;
+    --primary-foreground: 200 8% 11%;
+    
+    --secondary: 200 8% 18%;
+    --secondary-foreground: 40 6% 95%;
+    
+    --muted: 200 8% 20%;
+    --muted-foreground: 0 0% 55%;
+    
+    --accent: 200 8% 22%;
+    --accent-foreground: 40 6% 95%;
+    
+    --destructive: 0 62% 30%;
+    --destructive-foreground: 40 6% 95%;
+    
+    --border: 200 8% 22%;
+    --input: 200 8% 22%;
+    --ring: 40 6% 70%;
+    
+    --concrete: 0 0% 55%;
+    --grid-color: 40 6% 95%;
+    --glass-bg: 200 8% 14% / 0.85;
+    --shadow-color: 0 0% 0% / 0.4;
   }
 }
 
@@ -98,8 +82,113 @@ All colors MUST be HSL.
   * {
     @apply border-border;
   }
-
+  
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-sans antialiased;
+    font-family: 'Space Grotesk', sans-serif;
   }
+  
+  .font-mono {
+    font-family: 'Space Mono', monospace;
+  }
+}
+
+@layer components {
+  .grid-bg {
+    background-image: 
+      linear-gradient(hsl(var(--grid-color) / 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, hsl(var(--grid-color) / 0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+  
+  .glass {
+    background: hsl(var(--glass-bg));
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+  
+  .hard-shadow {
+    box-shadow: 6px 6px 0px hsl(var(--shadow-color));
+  }
+  
+  .hard-shadow-sm {
+    box-shadow: 3px 3px 0px hsl(var(--shadow-color));
+  }
+  
+  .hover-lift {
+    @apply transition-transform duration-200;
+  }
+  
+  .hover-lift:hover {
+    transform: translateY(-4px);
+  }
+  
+  .bento-card {
+    @apply bg-card border border-border p-6 hard-shadow hover-lift;
+  }
+  
+  .skeleton {
+    @apply bg-muted animate-pulse rounded;
+  }
+}
+
+@layer utilities {
+  .text-concrete {
+    color: hsl(var(--concrete));
+  }
+  
+  .border-concrete {
+    border-color: hsl(var(--concrete));
+  }
+  
+  .bg-concrete {
+    background-color: hsl(var(--concrete));
+  }
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: hsl(var(--muted));
+}
+
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--concrete));
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--foreground) / 0.5);
+}
+
+/* Animation keyframes */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 0 0 hsl(var(--primary) / 0.3); }
+  50% { box-shadow: 0 0 20px 5px hsl(var(--primary) / 0.1); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-out forwards;
+}
+
+.animate-slide-up {
+  animation: slideUp 0.4s ease-out forwards;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
 }
