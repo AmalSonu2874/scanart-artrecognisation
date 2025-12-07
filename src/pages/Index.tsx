@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { Scan, Share2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
@@ -9,20 +9,15 @@ import AboutSection from "@/components/AboutSection";
 import ArtStyleInfo from "@/components/ArtStyleInfo";
 import CommandConsole from "@/components/CommandConsole";
 import Footer from "@/components/Footer";
-
-interface PredictionData {
-  label: string;
-  confidence: number;
-}
+import { analyzeArtwork, ArtPrediction } from "@/services/artAnalyzer";
 
 const Index = () => {
   const [isDark, setIsDark] = useState(true);
   const [isConsoleOpen, setIsConsoleOpen] = useState(false);
   const [currentImage, setCurrentImage] = useState<string | null>(null);
   const [currentFile, setCurrentFile] = useState<File | null>(null);
-  const [prediction, setPrediction] = useState<PredictionData | null>(null);
+  const [prediction, setPrediction] = useState<ArtPrediction | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const [apiUrl, setApiUrl] = useState("https://your-flask-backend.com");
 
   // Initialize theme
   useEffect(() => {
@@ -64,8 +59,8 @@ const Index = () => {
     setPrediction(null);
   };
 
-  const analyzeArtwork = async () => {
-    if (!currentFile) {
+  const runAnalysis = async () => {
+    if (!currentImage) {
       toast.error("Please upload an image first");
       return;
     }
@@ -73,30 +68,31 @@ const Index = () => {
     setIsAnalyzing(true);
     
     try {
-      // Simulate API call - replace with actual Flask backend
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      // Mock response - in production, this would come from Flask
-      const mockStyles = ["Madhubani", "Kerala Mural", "Gond", "Kangra", "Mandana", "Kalighat", "Pichwai", "Warli"];
-      const mockPrediction: PredictionData = {
-        label: mockStyles[Math.floor(Math.random() * mockStyles.length)],
-        confidence: 0.7 + Math.random() * 0.25,
-      };
-      
-      setPrediction(mockPrediction);
-      toast.success(`Detected: ${mockPrediction.label}`);
+      const result = await analyzeArtwork(currentImage);
+      setPrediction(result);
+      toast.success(`Detected: ${result.label}`);
       
       // Save to history
       const history = JSON.parse(localStorage.getItem("ikara_history") || "[]");
       history.unshift({
-        label: mockPrediction.label,
-        confidence: mockPrediction.confidence,
+        label: result.label,
+        confidence: result.confidence,
+        description: result.description,
         timestamp: new Date().toISOString(),
       });
       localStorage.setItem("ikara_history", JSON.stringify(history.slice(0, 20)));
       
     } catch (error) {
-      toast.error("Analysis failed. Please try again.");
+      console.error('Analysis error:', error);
+      const errorMessage = error instanceof Error ? error.message : "Analysis failed";
+      
+      if (errorMessage.includes('Rate limit')) {
+        toast.error("Too many requests. Please wait a moment and try again.");
+      } else if (errorMessage.includes('credits')) {
+        toast.error("AI credits exhausted. Please add funds to continue.");
+      } else {
+        toast.error(errorMessage);
+      }
     } finally {
       setIsAnalyzing(false);
     }
@@ -120,22 +116,28 @@ const Index = () => {
   };
 
   const handleCommand = (command: string): string => {
-    const commands: Record<string, string> = {
+    const commands: Record<string, string | (() => string)> = {
       help: "Available commands:\n• about - Show website description\n• help - List commands\n• reset - Clear upload & prediction\n• theme - Toggle theme\n• version - Show model version\n• credits - Show developer credit\n• modelinfo - Show model metadata\n• history - Show prediction history",
-      about: "IKARA is an AI-powered Indian Traditional Art Classification system that recognizes 8 distinct art styles using deep learning.",
-      reset: (() => { handleClearImage(); return "Upload and prediction cleared."; })(),
-      theme: (() => { toggleTheme(); return `Theme switched to ${!isDark ? "dark" : "light"} mode.`; })(),
-      version: "Model Version: VGG16-IKARA v1.0",
+      about: "IKARA is an AI-powered Indian Traditional Art Classification system that recognizes 8 distinct art styles using Lovable AI vision capabilities.",
+      reset: () => { handleClearImage(); return "Upload and prediction cleared."; },
+      theme: () => { toggleTheme(); return `Theme switched to ${!isDark ? "dark" : "light"} mode.`; },
+      version: "Model: Lovable AI Vision v1.0\nPowered by: google/gemini-2.5-flash",
       credits: "Created by Cresvero\nhttps://amalsonu2874.github.io/cresvero.tech/",
-      modelinfo: "Model: VGG16 Transfer Learning\nClasses: 8 Indian Art Styles\nInput: 224x224 RGB\nFramework: TensorFlow/Keras",
-      history: (() => {
+      modelinfo: "Model: Lovable AI Vision\nBackend: google/gemini-2.5-flash\nClasses: 8 Indian Art Styles\nCapabilities: Vision + Text Analysis",
+      history: () => {
         const history = JSON.parse(localStorage.getItem("ikara_history") || "[]");
         if (history.length === 0) return "No prediction history yet.";
-        return history.slice(0, 5).map((h: any) => `${h.label} (${Math.round(h.confidence * 100)}%)`).join("\n");
-      })(),
+        return history.slice(0, 5).map((h: { label: string; confidence: number }) => 
+          `${h.label} (${Math.round(h.confidence * 100)}%)`
+        ).join("\n");
+      },
     };
     
-    return commands[command] || `Unknown command: ${command}. Type 'help' for available commands.`;
+    const result = commands[command];
+    if (typeof result === 'function') {
+      return result();
+    }
+    return result || `Unknown command: ${command}. Type 'help' for available commands.`;
   };
 
   return (
@@ -154,6 +156,9 @@ const Index = () => {
             <p className="text-muted-foreground">
               Upload an image of Indian traditional art to identify its style
             </p>
+            <p className="text-xs text-muted-foreground font-mono mt-2">
+              Powered by Lovable AI Vision
+            </p>
           </div>
           
           <ImageUpload
@@ -165,7 +170,7 @@ const Index = () => {
           {currentImage && (
             <div className="flex flex-wrap gap-3 mt-6 justify-center">
               <Button
-                onClick={analyzeArtwork}
+                onClick={runAnalysis}
                 disabled={isAnalyzing}
                 className="hard-shadow font-mono"
               >
@@ -190,7 +195,7 @@ const Index = () => {
             <PredictionResult
               prediction={prediction}
               isLoading={isAnalyzing}
-              onRerun={analyzeArtwork}
+              onRerun={runAnalysis}
             />
           </div>
         </section>

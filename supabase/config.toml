@@ -1,0 +1,4 @@
+project_id = "qvntzqhrotmzrmcplfzg"
+
+[functions.analyze-art]
+verify_jwt = false

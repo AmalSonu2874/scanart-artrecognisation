@@ -1,0 +1,9 @@
+# Flask Backend Requirements for IKARA
+# Deploy to Railway, Render, or Heroku
+
+flask==3.0.0
+flask-cors==4.0.0
+tensorflow==2.15.0
+pillow==10.1.0
+numpy==1.26.2
+gunicorn==21.2.0
