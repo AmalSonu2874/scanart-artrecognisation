@@ -1,19 +1,8 @@
 import { useState } from "react";
-import { BarChart3, Layers, Volume2, VolumeX, RefreshCw } from "lucide-react";
+import { BarChart3, Volume2, VolumeX, RefreshCw, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-
-interface PredictionData {
-  label: string;
-  confidence: number;
-  allPredictions?: { label: string; confidence: number }[];
-}
-
-interface PredictionResultProps {
-  prediction: PredictionData | null;
-  isLoading: boolean;
-  onRerun: () => void;
-}
+import { ArtPrediction } from "@/services/artAnalyzer";
 
 const ART_STYLES = [
   "Madhubani",
@@ -25,6 +14,12 @@ const ART_STYLES = [
   "Pichwai",
   "Warli"
 ];
+
+interface PredictionResultProps {
+  prediction: ArtPrediction | null;
+  isLoading: boolean;
+  onRerun: () => void;
+}
 
 const PredictionResult = ({ prediction, isLoading, onRerun }: PredictionResultProps) => {
   const [showGraph, setShowGraph] = useState(false);
@@ -43,6 +38,10 @@ const PredictionResult = ({ prediction, isLoading, onRerun }: PredictionResultPr
     return (
       <div className="bg-card border border-border rounded p-6 hard-shadow animate-pulse">
         <div className="space-y-4">
+          <div className="flex items-center gap-2">
+            <Sparkles className="w-4 h-4 animate-spin" />
+            <span className="text-sm font-mono">AI analyzing artwork...</span>
+          </div>
           <div className="h-6 bg-muted rounded w-1/3"></div>
           <div className="h-12 bg-muted rounded w-2/3"></div>
           <div className="h-4 bg-muted rounded w-1/2"></div>
@@ -53,18 +52,23 @@ const PredictionResult = ({ prediction, isLoading, onRerun }: PredictionResultPr
 
   if (!prediction) return null;
 
-  // Generate mock confidence data for all styles
-  const mockConfidences = ART_STYLES.map(style => ({
+  // Use provided predictions or generate based on main prediction
+  const allPredictions = prediction.all_predictions || ART_STYLES.map(style => ({
     label: style,
     confidence: style === prediction.label 
       ? prediction.confidence 
       : Math.random() * (1 - prediction.confidence) * 0.3
-  })).sort((a, b) => b.confidence - a.confidence);
+  }));
+
+  const sortedPredictions = [...allPredictions].sort((a, b) => b.confidence - a.confidence);
 
   return (
     <div className="bg-card border border-border rounded p-6 hard-shadow animate-slide-up">
       <div className="flex items-center justify-between mb-6">
-        <span className="text-sm font-mono text-muted-foreground">PREDICTION RESULT</span>
+        <div className="flex items-center gap-2">
+          <Sparkles className="w-4 h-4 text-muted-foreground" />
+          <span className="text-sm font-mono text-muted-foreground">AI PREDICTION</span>
+        </div>
         <div className="flex items-center gap-2">
           <Button
             variant="ghost"
@@ -100,6 +104,14 @@ const PredictionResult = ({ prediction, isLoading, onRerun }: PredictionResultPr
           </div>
         </div>
 
+        {/* AI Description */}
+        {prediction.description && (
+          <div className="bg-muted/50 rounded p-4 border border-border">
+            <p className="text-sm text-muted-foreground mb-1 font-mono">AI ANALYSIS</p>
+            <p className="text-sm">{prediction.description}</p>
+          </div>
+        )}
+
         {/* Confidence Bar */}
         <div>
           <div className="flex justify-between text-sm mb-2">
@@ -108,6 +120,14 @@ const PredictionResult = ({ prediction, isLoading, onRerun }: PredictionResultPr
           </div>
           <Progress value={prediction.confidence * 100} className="h-3" />
         </div>
+
+        {/* Model Info */}
+        {prediction.version && (
+          <div className="flex items-center justify-between text-xs text-muted-foreground font-mono">
+            <span>{prediction.version}</span>
+            <span>{prediction.model}</span>
+          </div>
+        )}
 
         {/* Action Buttons */}
         <div className="flex flex-wrap gap-2">
@@ -136,7 +156,7 @@ const PredictionResult = ({ prediction, isLoading, onRerun }: PredictionResultPr
         {showGraph && (
           <div className="space-y-3 pt-4 border-t border-border animate-fade-in">
             <p className="text-sm font-mono text-muted-foreground">ALL PREDICTIONS</p>
-            {mockConfidences.map(({ label, confidence }) => (
+            {sortedPredictions.map(({ label, confidence }) => (
               <div key={label} className="space-y-1">
                 <div className="flex justify-between text-sm">
                   <span className={label === prediction.label ? "font-bold" : ""}>
