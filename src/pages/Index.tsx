@@ -1,11 +1,222 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { useState, useEffect, useCallback } from "react";
+import { Scan, Share2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
+import Navbar from "@/components/Navbar";
+import ImageUpload from "@/components/ImageUpload";
+import PredictionResult from "@/components/PredictionResult";
+import AboutSection from "@/components/AboutSection";
+import ArtStyleInfo from "@/components/ArtStyleInfo";
+import CommandConsole from "@/components/CommandConsole";
+import Footer from "@/components/Footer";
+
+interface PredictionData {
+  label: string;
+  confidence: number;
+}
 
 const Index = () => {
+  const [isDark, setIsDark] = useState(true);
+  const [isConsoleOpen, setIsConsoleOpen] = useState(false);
+  const [currentImage, setCurrentImage] = useState<string | null>(null);
+  const [currentFile, setCurrentFile] = useState<File | null>(null);
+  const [prediction, setPrediction] = useState<PredictionData | null>(null);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [apiUrl, setApiUrl] = useState("https://your-flask-backend.com");
+
+  // Initialize theme
+  useEffect(() => {
+    document.documentElement.classList.toggle("dark", isDark);
+  }, [isDark]);
+
+  // Keyboard shortcuts
+  useEffect(() => {
+    const handleKeyPress = (e: KeyboardEvent) => {
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
+      
+      switch (e.key.toLowerCase()) {
+        case "t":
+          setIsDark(prev => !prev);
+          break;
+        case "c":
+          setIsConsoleOpen(true);
+          break;
+        case "u":
+          document.querySelector<HTMLInputElement>('input[type="file"]')?.click();
+          break;
+      }
+    };
+    window.addEventListener("keydown", handleKeyPress);
+    return () => window.removeEventListener("keydown", handleKeyPress);
+  }, []);
+
+  const toggleTheme = () => setIsDark(prev => !prev);
+
+  const handleImageSelect = (file: File, preview: string) => {
+    setCurrentFile(file);
+    setCurrentImage(preview);
+    setPrediction(null);
+  };
+
+  const handleClearImage = () => {
+    setCurrentFile(null);
+    setCurrentImage(null);
+    setPrediction(null);
+  };
+
+  const analyzeArtwork = async () => {
+    if (!currentFile) {
+      toast.error("Please upload an image first");
+      return;
+    }
+
+    setIsAnalyzing(true);
+    
+    try {
+      // Simulate API call - replace with actual Flask backend
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      // Mock response - in production, this would come from Flask
+      const mockStyles = ["Madhubani", "Kerala Mural", "Gond", "Kangra", "Mandana", "Kalighat", "Pichwai", "Warli"];
+      const mockPrediction: PredictionData = {
+        label: mockStyles[Math.floor(Math.random() * mockStyles.length)],
+        confidence: 0.7 + Math.random() * 0.25,
+      };
+      
+      setPrediction(mockPrediction);
+      toast.success(`Detected: ${mockPrediction.label}`);
+      
+      // Save to history
+      const history = JSON.parse(localStorage.getItem("ikara_history") || "[]");
+      history.unshift({
+        label: mockPrediction.label,
+        confidence: mockPrediction.confidence,
+        timestamp: new Date().toISOString(),
+      });
+      localStorage.setItem("ikara_history", JSON.stringify(history.slice(0, 20)));
+      
+    } catch (error) {
+      toast.error("Analysis failed. Please try again.");
+    } finally {
+      setIsAnalyzing(false);
+    }
+  };
+
+  const shareResult = async () => {
+    if (!prediction) return;
+    
+    const shareText = `I just discovered that this artwork is "${prediction.label}" style with ${Math.round(prediction.confidence * 100)}% confidence using IKARA - Indian Art Classifier!`;
+    
+    if (navigator.share) {
+      try {
+        await navigator.share({ text: shareText });
+      } catch (e) {
+        // User cancelled or share failed
+      }
+    } else {
+      await navigator.clipboard.writeText(shareText);
+      toast.success("Result copied to clipboard!");
+    }
+  };
+
+  const handleCommand = (command: string): string => {
+    const commands: Record<string, string> = {
+      help: "Available commands:\n• about - Show website description\n• help - List commands\n• reset - Clear upload & prediction\n• theme - Toggle theme\n• version - Show model version\n• credits - Show developer credit\n• modelinfo - Show model metadata\n• history - Show prediction history",
+      about: "IKARA is an AI-powered Indian Traditional Art Classification system that recognizes 8 distinct art styles using deep learning.",
+      reset: (() => { handleClearImage(); return "Upload and prediction cleared."; })(),
+      theme: (() => { toggleTheme(); return `Theme switched to ${!isDark ? "dark" : "light"} mode.`; })(),
+      version: "Model Version: VGG16-IKARA v1.0",
+      credits: "Created by Cresvero\nhttps://amalsonu2874.github.io/cresvero.tech/",
+      modelinfo: "Model: VGG16 Transfer Learning\nClasses: 8 Indian Art Styles\nInput: 224x224 RGB\nFramework: TensorFlow/Keras",
+      history: (() => {
+        const history = JSON.parse(localStorage.getItem("ikara_history") || "[]");
+        if (history.length === 0) return "No prediction history yet.";
+        return history.slice(0, 5).map((h: any) => `${h.label} (${Math.round(h.confidence * 100)}%)`).join("\n");
+      })(),
+    };
+    
+    return commands[command] || `Unknown command: ${command}. Type 'help' for available commands.`;
+  };
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="mb-4 text-4xl font-bold">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
+    <div className="min-h-screen grid-bg">
+      <Navbar 
+        isDark={isDark} 
+        toggleTheme={toggleTheme} 
+        openConsole={() => setIsConsoleOpen(true)} 
+      />
+      
+      <main className="container mx-auto px-4 pt-28 pb-8">
+        {/* Upload Section */}
+        <section className="max-w-2xl mx-auto mb-12">
+          <div className="text-center mb-8">
+            <h2 className="text-2xl font-bold mb-2">Analyze Artwork</h2>
+            <p className="text-muted-foreground">
+              Upload an image of Indian traditional art to identify its style
+            </p>
+          </div>
+          
+          <ImageUpload
+            onImageSelect={handleImageSelect}
+            onClear={handleClearImage}
+            currentImage={currentImage}
+          />
+          
+          {currentImage && (
+            <div className="flex flex-wrap gap-3 mt-6 justify-center">
+              <Button
+                onClick={analyzeArtwork}
+                disabled={isAnalyzing}
+                className="hard-shadow font-mono"
+              >
+                <Scan className="w-4 h-4 mr-2" />
+                {isAnalyzing ? "Analyzing..." : "Analyze Artwork"}
+              </Button>
+              
+              {prediction && (
+                <Button
+                  variant="secondary"
+                  onClick={shareResult}
+                  className="hard-shadow-sm font-mono"
+                >
+                  <Share2 className="w-4 h-4 mr-2" />
+                  Share Result
+                </Button>
+              )}
+            </div>
+          )}
+          
+          <div className="mt-6">
+            <PredictionResult
+              prediction={prediction}
+              isLoading={isAnalyzing}
+              onRerun={analyzeArtwork}
+            />
+          </div>
+        </section>
+
+        {/* About Section */}
+        <section className="mb-12">
+          <AboutSection />
+        </section>
+
+        {/* Art Styles Info */}
+        <section className="max-w-2xl mx-auto">
+          <ArtStyleInfo />
+        </section>
+      </main>
+
+      <Footer />
+      
+      <CommandConsole
+        isOpen={isConsoleOpen}
+        onClose={() => setIsConsoleOpen(false)}
+        onCommand={handleCommand}
+      />
+      
+      {/* Keyboard shortcuts hint */}
+      <div className="fixed bottom-4 left-4 text-xs text-muted-foreground font-mono hidden md:block">
+        <span className="opacity-50">Shortcuts: U=Upload, T=Theme, C=Console</span>
       </div>
     </div>
   );
