@@ -136,7 +136,7 @@ const Index = () => {
   return <div className="min-h-screen grid-bg">
       <Navbar isDark={isDark} toggleTheme={toggleTheme} openConsole={() => setIsConsoleOpen(true)} />
       
-      <main className="container mx-auto px-4 pt-28 pb-8">
+      <main className="container mx-auto px-4 pt-28 pb-8 border-dashed shadow-md rounded-md">
         {/* Upload Section */}
         <section className="max-w-2xl mx-auto mb-12">
           <div className="text-center mb-8">

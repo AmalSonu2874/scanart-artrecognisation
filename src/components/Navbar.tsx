@@ -15,7 +15,7 @@ const Navbar = ({
         <div className="flex items-center gap-3">
           
           <div>
-            <h1 className="text-xl font-bold tracking-tight">ScanArt
+            <h1 className="text-xl font-bold tracking-tight">​I.K.A.R.A
           </h1>
             
           </div>
