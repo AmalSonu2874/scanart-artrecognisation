@@ -176,19 +176,43 @@
   to { opacity: 1; transform: translateY(0); }
 }
 
+@keyframes slideInRight {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
 @keyframes pulse-glow {
   0%, 100% { box-shadow: 0 0 0 0 hsl(var(--primary) / 0.3); }
   50% { box-shadow: 0 0 20px 5px hsl(var(--primary) / 0.1); }
 }
 
 .animate-fade-in {
-  animation: fadeIn 0.3s ease-out forwards;
+  animation: fadeIn 0.4s ease-out forwards;
 }
 
 .animate-slide-up {
-  animation: slideUp 0.4s ease-out forwards;
+  animation: slideUp 0.5s ease-out forwards;
+}
+
+.animate-slide-in-right {
+  animation: slideInRight 0.3s ease-out forwards;
 }
 
 .animate-pulse-glow {
   animation: pulse-glow 2s ease-in-out infinite;
+}
+
+/* Reduced motion */
+.reduce-motion * {
+  animation-duration: 0.01ms !important;
+  transition-duration: 0.01ms !important;
+}
+
+/* Compact mode */
+.compact-mode .bento-card {
+  @apply p-4;
+}
+
+.compact-mode section {
+  @apply mb-8;
 }
