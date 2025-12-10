@@ -152,9 +152,12 @@ const CommandConsole = ({ isOpen, onClose, onCommand }: CommandConsoleProps) => 
         onClick={onClose}
       />
       
-      {/* Console */}
-      <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 w-full max-w-2xl px-4 animate-fade-in">
-        <div className="glass border border-border rounded-lg hard-shadow overflow-hidden">
+      {/* Console - Perfectly Centered */}
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div 
+          className="glass border border-border rounded-lg hard-shadow overflow-hidden w-full max-w-2xl animate-fade-in"
+          onClick={(e) => e.stopPropagation()}
+        >
           {/* Header */}
           <div className="flex items-center justify-between px-4 py-3 border-b border-border bg-card/80">
             <div className="flex items-center gap-3">
