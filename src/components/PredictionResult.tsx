@@ -1,8 +1,9 @@
 import { useState } from "react";
-import { BarChart3, Volume2, VolumeX, RefreshCw, Sparkles } from "lucide-react";
+import { BarChart3, Volume2, VolumeX, RefreshCw, Sparkles, AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { ArtPrediction } from "@/services/artAnalyzer";
+import FeedbackDialog from "./FeedbackDialog";
 
 const ART_STYLES = [
   "Madhubani",
@@ -19,11 +20,13 @@ interface PredictionResultProps {
   prediction: ArtPrediction | null;
   isLoading: boolean;
   onRerun: () => void;
+  imageData?: string;
 }
 
-const PredictionResult = ({ prediction, isLoading, onRerun }: PredictionResultProps) => {
+const PredictionResult = ({ prediction, isLoading, onRerun, imageData }: PredictionResultProps) => {
   const [showGraph, setShowGraph] = useState(false);
   const [audioEnabled, setAudioEnabled] = useState(false);
+  const [showFeedback, setShowFeedback] = useState(false);
 
   const speakResult = () => {
     if (prediction && audioEnabled) {
@@ -138,7 +141,7 @@ const PredictionResult = ({ prediction, isLoading, onRerun }: PredictionResultPr
             className="font-mono"
           >
             <BarChart3 className="w-4 h-4 mr-2" />
-            {showGraph ? "Hide" : "Show"} Confidence Graph
+            {showGraph ? "Hide" : "Show"} Graph
           </Button>
           <Button
             variant="secondary"
@@ -150,7 +153,24 @@ const PredictionResult = ({ prediction, isLoading, onRerun }: PredictionResultPr
             <Volume2 className="w-4 h-4 mr-2" />
             Read Result
           </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setShowFeedback(true)}
+            className="font-mono text-destructive hover:text-destructive"
+          >
+            <AlertTriangle className="w-4 h-4 mr-2" />
+            Raise Error
+          </Button>
         </div>
+
+        {/* Feedback Dialog */}
+        <FeedbackDialog
+          isOpen={showFeedback}
+          onClose={() => setShowFeedback(false)}
+          predictedStyle={prediction.label}
+          imageData={imageData}
+        />
 
         {/* Confidence Graph */}
         {showGraph && (

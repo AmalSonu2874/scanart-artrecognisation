@@ -26,14 +26,14 @@ const LoadingScreen = ({ onComplete }: LoadingScreenProps) => {
 
   return (
     <div 
-      className={`fixed inset-0 z-[100] bg-background flex flex-col items-center justify-center transition-opacity duration-500 ${fadeOut ? 'opacity-0' : 'opacity-100'}`}
+      className={`fixed inset-0 z-[100] bg-background flex items-center justify-center transition-opacity duration-500 ${fadeOut ? 'opacity-0' : 'opacity-100'}`}
     >
-      <div className="relative">
+      <div className="relative w-full max-w-lg px-4 flex flex-col items-center">
         {/* Animated grid background */}
         <div className="absolute inset-0 -m-32 grid-bg opacity-30" />
         
         {/* Main title */}
-        <h1 className="text-5xl md:text-7xl font-bold tracking-wider font-mono relative">
+        <h1 className="text-4xl sm:text-5xl md:text-7xl font-bold tracking-wider font-mono relative text-center">
           {letters.map((letter, index) => (
             <span
               key={index}
@@ -51,7 +51,7 @@ const LoadingScreen = ({ onComplete }: LoadingScreenProps) => {
         
         {/* Subtitle */}
         <p 
-          className={`text-center mt-6 text-muted-foreground font-mono text-sm tracking-widest transition-all duration-500 ${
+          className={`text-center mt-4 sm:mt-6 text-muted-foreground font-mono text-xs sm:text-sm tracking-widest transition-all duration-500 px-4 ${
             showSubtitle ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'
           }`}
         >
@@ -59,7 +59,7 @@ const LoadingScreen = ({ onComplete }: LoadingScreenProps) => {
         </p>
         
         {/* Loading bar */}
-        <div className="mt-8 w-64 h-0.5 bg-muted mx-auto overflow-hidden">
+        <div className="mt-6 sm:mt-8 w-48 sm:w-64 h-0.5 bg-muted overflow-hidden">
           <div 
             className="h-full bg-foreground transition-all duration-[1500ms] ease-out"
             style={{ width: showSubtitle ? '100%' : '0%' }}
