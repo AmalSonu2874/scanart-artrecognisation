@@ -75,10 +75,18 @@ const UISettings = ({ isOpen, onClose }: UISettingsProps) => {
 
   return (
     <>
-      <div className="fixed inset-0 bg-background/50 z-50 backdrop-blur-sm" onClick={onClose} />
+      {/* Backdrop */}
+      <div 
+        className="fixed inset-0 bg-background/60 backdrop-blur-sm z-50"
+        onClick={onClose}
+      />
       
-      <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-50 w-full max-w-md animate-fade-in">
-        <div className="bg-card border border-border rounded-lg hard-shadow overflow-hidden mx-4">
+      {/* Dialog - Perfectly Centered */}
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div 
+          className="bg-card border border-border rounded-lg hard-shadow w-full max-w-md animate-fade-in"
+          onClick={(e) => e.stopPropagation()}
+        >
           <div className="flex items-center justify-between px-6 py-4 border-b border-border">
             <div className="flex items-center gap-2">
               <Palette className="w-5 h-5" />

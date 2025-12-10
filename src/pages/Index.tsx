@@ -130,7 +130,7 @@ const Index = () => {
               {prediction && <Button variant="secondary" onClick={shareResult} className="hard-shadow-sm font-mono"><Share2 className="w-4 h-4 mr-2" />Share</Button>}
             </div>
           )}
-          <div className="mt-6"><PredictionResult prediction={prediction} isLoading={isAnalyzing} onRerun={runAnalysis} imageData={currentImage || undefined} /></div>
+          <div className="mt-6"><PredictionResult prediction={prediction} isLoading={isAnalyzing} onRerun={runAnalysis} imageData={currentImage || undefined} onPredictionUpdate={setPrediction} /></div>
         </section>
 
         <section ref={aboutRef} className="mb-16"><AboutSection /></section>

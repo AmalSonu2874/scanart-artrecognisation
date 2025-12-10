@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { ArtPrediction } from "@/services/artAnalyzer";
 import FeedbackDialog from "./FeedbackDialog";
+import { artStyles } from "@/data/artStyles";
 
 const ART_STYLES = [
   "Madhubani",
@@ -21,12 +22,14 @@ interface PredictionResultProps {
   isLoading: boolean;
   onRerun: () => void;
   imageData?: string;
+  onPredictionUpdate?: (newPrediction: ArtPrediction) => void;
 }
 
-const PredictionResult = ({ prediction, isLoading, onRerun, imageData }: PredictionResultProps) => {
+const PredictionResult = ({ prediction, isLoading, onRerun, imageData, onPredictionUpdate }: PredictionResultProps) => {
   const [showGraph, setShowGraph] = useState(false);
   const [audioEnabled, setAudioEnabled] = useState(false);
   const [showFeedback, setShowFeedback] = useState(false);
+  const [correctionApplied, setCorrectionApplied] = useState(false);
 
   const speakResult = () => {
     if (prediction && audioEnabled) {
@@ -35,6 +38,29 @@ const PredictionResult = ({ prediction, isLoading, onRerun, imageData }: Predict
       );
       speechSynthesis.speak(utterance);
     }
+  };
+
+  const handleCorrectionAccepted = (correctedStyle: string, explanation: string) => {
+    if (prediction && onPredictionUpdate) {
+      const styleInfo = artStyles.find(s => s.name === correctedStyle);
+      
+      const correctedPrediction: ArtPrediction = {
+        ...prediction,
+        label: correctedStyle,
+        confidence: 1.0, // User confirmed, so 100% confidence
+        description: explanation || styleInfo?.description || prediction.description,
+        version: "User Corrected",
+        model: "IKARA + Human Feedback",
+        all_predictions: ART_STYLES.map(style => ({
+          label: style,
+          confidence: style === correctedStyle ? 1.0 : 0
+        }))
+      };
+      
+      onPredictionUpdate(correctedPrediction);
+      setCorrectionApplied(true);
+    }
+    setShowFeedback(false);
   };
 
   if (isLoading) {
@@ -70,7 +96,14 @@ const PredictionResult = ({ prediction, isLoading, onRerun, imageData }: Predict
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-2">
           <Sparkles className="w-4 h-4 text-muted-foreground" />
-          <span className="text-sm font-mono text-muted-foreground">AI PREDICTION</span>
+          <span className="text-sm font-mono text-muted-foreground">
+            {correctionApplied ? "CORRECTED RESULT" : "AI PREDICTION"}
+          </span>
+          {correctionApplied && (
+            <span className="text-xs bg-green-500/20 text-green-600 px-2 py-0.5 rounded font-mono">
+              VERIFIED
+            </span>
+          )}
         </div>
         <div className="flex items-center gap-2">
           <Button
@@ -94,7 +127,9 @@ const PredictionResult = ({ prediction, isLoading, onRerun, imageData }: Predict
 
       <div className="space-y-6">
         {/* Main Result */}
-        <div className="text-center py-4 border border-border rounded bg-background">
+        <div className={`text-center py-4 border rounded bg-background ${
+          correctionApplied ? 'border-green-500/50' : 'border-border'
+        }`}>
           <p className="text-sm text-muted-foreground mb-2">Detected Art Style</p>
           <h2 className="text-3xl font-bold tracking-tight">{prediction.label}</h2>
           <div className="mt-4 flex items-center justify-center gap-4">
@@ -102,7 +137,9 @@ const PredictionResult = ({ prediction, isLoading, onRerun, imageData }: Predict
               <p className="text-4xl font-mono font-bold">
                 {Math.round(prediction.confidence * 100)}%
               </p>
-              <p className="text-xs text-muted-foreground">CONFIDENCE</p>
+              <p className="text-xs text-muted-foreground">
+                {correctionApplied ? "USER VERIFIED" : "CONFIDENCE"}
+              </p>
             </div>
           </div>
         </div>
@@ -110,8 +147,10 @@ const PredictionResult = ({ prediction, isLoading, onRerun, imageData }: Predict
         {/* AI Description */}
         {prediction.description && (
           <div className="bg-muted/50 rounded p-4 border border-border">
-            <p className="text-sm text-muted-foreground mb-1 font-mono">AI ANALYSIS</p>
-            <p className="text-sm">{prediction.description}</p>
+            <p className="text-sm text-muted-foreground mb-1 font-mono">
+              {correctionApplied ? "ABOUT THIS ART STYLE" : "AI ANALYSIS"}
+            </p>
+            <p className="text-sm whitespace-pre-line">{prediction.description}</p>
           </div>
         )}
 
@@ -121,7 +160,10 @@ const PredictionResult = ({ prediction, isLoading, onRerun, imageData }: Predict
             <span className="text-muted-foreground">Confidence Level</span>
             <span className="font-mono">{Math.round(prediction.confidence * 100)}%</span>
           </div>
-          <Progress value={prediction.confidence * 100} className="h-3" />
+          <Progress 
+            value={prediction.confidence * 100} 
+            className={`h-3 ${correctionApplied ? '[&>div]:bg-green-500' : ''}`} 
+          />
         </div>
 
         {/* Model Info */}
@@ -153,15 +195,17 @@ const PredictionResult = ({ prediction, isLoading, onRerun, imageData }: Predict
             <Volume2 className="w-4 h-4 mr-2" />
             Read Result
           </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setShowFeedback(true)}
-            className="font-mono text-destructive hover:text-destructive"
-          >
-            <AlertTriangle className="w-4 h-4 mr-2" />
-            Raise Error
-          </Button>
+          {!correctionApplied && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setShowFeedback(true)}
+              className="font-mono text-destructive hover:text-destructive"
+            >
+              <AlertTriangle className="w-4 h-4 mr-2" />
+              Raise Error
+            </Button>
+          )}
         </div>
 
         {/* Feedback Dialog */}
@@ -170,6 +214,7 @@ const PredictionResult = ({ prediction, isLoading, onRerun, imageData }: Predict
           onClose={() => setShowFeedback(false)}
           predictedStyle={prediction.label}
           imageData={imageData}
+          onCorrectionAccepted={handleCorrectionAccepted}
         />
 
         {/* Confidence Graph */}
@@ -186,7 +231,11 @@ const PredictionResult = ({ prediction, isLoading, onRerun, imageData }: Predict
                 </div>
                 <div className="h-2 bg-muted rounded overflow-hidden">
                   <div
-                    className="h-full bg-foreground transition-all duration-500"
+                    className={`h-full transition-all duration-500 ${
+                      label === prediction.label && correctionApplied 
+                        ? 'bg-green-500' 
+                        : 'bg-foreground'
+                    }`}
                     style={{ width: `${confidence * 100}%` }}
                   />
                 </div>
