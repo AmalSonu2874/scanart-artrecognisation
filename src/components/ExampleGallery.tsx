@@ -1,52 +1,62 @@
 import { useState } from "react";
 import { Image, Play, Sparkles } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { artStyles } from "@/data/artStyles";
+
+// Import gallery images
+import warliImg from "@/assets/gallery/warli.png";
+import pichwaiImg from "@/assets/gallery/pichwai.png";
+import kalighatImg from "@/assets/gallery/kalighat.png";
+import mandanaImg from "@/assets/gallery/mandana.png";
+import kangraImg from "@/assets/gallery/kangra.png";
+import gondImg from "@/assets/gallery/gond.png";
+import keralaMuralImg from "@/assets/gallery/kerala_mural.png";
+import madhubaniImg from "@/assets/gallery/madhubani.png";
 
 interface ExampleGalleryProps {
   onSelectImage: (imageUrl: string, styleName: string) => void;
 }
 
+// Order: Warli, Pichwai, Kalighat, Mandana, Kangra, Gond, Kerala Mural, Madhubani
 const EXAMPLE_IMAGES = [
   {
-    name: "Madhubani",
-    url: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/Madhubani_art.jpg/800px-Madhubani_art.jpg",
-    description: "Traditional Madhubani featuring geometric patterns and natural dyes"
-  },
-  {
-    name: "Kerala Mural",
-    url: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5c/Kerala_Mural_-_Krishna.jpg/800px-Kerala_Mural_-_Krishna.jpg",
-    description: "Temple mural art depicting divine figures with bold outlines"
-  },
-  {
-    name: "Gond",
-    url: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/A_Gond_painting.JPG/800px-A_Gond_painting.JPG",
-    description: "Tribal art with intricate dot patterns and nature motifs"
-  },
-  {
-    name: "Kangra",
-    url: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4c/Kangra_Painting.jpg/800px-Kangra_Painting.jpg",
-    description: "Miniature painting with delicate brushwork and soft colors"
-  },
-  {
-    name: "Mandana",
-    url: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Mandana_art.jpg/800px-Mandana_art.jpg",
-    description: "Floor art with geometric designs using chalk and red ochre"
-  },
-  {
-    name: "Kalighat",
-    url: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/Kalighat_Painting_Calcutta_19th_Century_-_Fish.jpg/800px-Kalighat_Painting_Calcutta_19th_Century_-_Fish.jpg",
-    description: "Bold, simplified forms with satirical social commentary"
+    name: "Warli",
+    image: warliImg,
+    description: "Traditional Warli art depicting a wedding couple dance scene with geometric shapes and stick figures, showcasing the tribal art form's characteristic white-on-brown aesthetic from Maharashtra."
   },
   {
     name: "Pichwai",
-    url: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/Pichwai_Painting.jpg/800px-Pichwai_Painting.jpg",
-    description: "Devotional paintings of Lord Krishna with rich details"
+    image: pichwaiImg,
+    description: "Sacred Pichwai painting featuring Shrinathji's divine cow (Gau Seva) surrounded by lotus flowers, representing the devotional art tradition from Nathdwara, Rajasthan."
   },
   {
-    name: "Warli",
-    url: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/97/Warli_painting.jpg/800px-Warli_painting.jpg",
-    description: "Tribal art using white geometric shapes on brown background"
+    name: "Kalighat",
+    image: kalighatImg,
+    description: "Vibrant Kalighat pat painting of Goddess Durga with bold brushstrokes and vivid colors, exemplifying the 19th century Bengali folk art tradition from near the Kalighat temple."
+  },
+  {
+    name: "Mandana",
+    image: mandanaImg,
+    description: "Intricate Mandana floor art featuring an elephant motif with decorative geometric borders, created using white chalk on red ochre base - a traditional Rajasthani folk art."
+  },
+  {
+    name: "Kangra",
+    image: kangraImg,
+    description: "Delicate Kangra miniature painting depicting a woman playing music for deer in a lush landscape, showcasing the refined Pahari school's soft colors and romantic themes."
+  },
+  {
+    name: "Gond",
+    image: gondImg,
+    description: "Colorful Gond tribal art featuring peacocks with intricate dot-and-line patterns, representing the ancient artistic traditions of Madhya Pradesh's Gond community."
+  },
+  {
+    name: "Kerala Mural",
+    image: keralaMuralImg,
+    description: "Stunning Kerala Mural depicting a divine feminine figure with elaborate detailing, characteristic bold outlines, and the distinctive five-color palette of traditional temple murals."
+  },
+  {
+    name: "Madhubani",
+    image: madhubaniImg,
+    description: "Classic Madhubani painting with four-panel composition showing birds, faces, fish, and Krishna-Radha, featuring the signature double-line borders and natural motifs from Bihar."
   }
 ];
 
@@ -56,7 +66,7 @@ const ExampleGallery = ({ onSelectImage }: ExampleGalleryProps) => {
   const handleSelectExample = (index: number) => {
     setSelectedIndex(index);
     const example = EXAMPLE_IMAGES[index];
-    onSelectImage(example.url, example.name);
+    onSelectImage(example.image, example.name);
   };
 
   return (
@@ -88,7 +98,7 @@ const ExampleGallery = ({ onSelectImage }: ExampleGalleryProps) => {
               <div 
                 className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-110"
                 style={{ 
-                  backgroundImage: `url(${styleInfo?.imageUrl || example.url})`,
+                  backgroundImage: `url(${example.image})`,
                 }}
               />
               
@@ -118,6 +128,16 @@ const ExampleGallery = ({ onSelectImage }: ExampleGalleryProps) => {
           );
         })}
       </div>
+
+      {/* Description of selected image */}
+      {selectedIndex !== null && (
+        <div className="mt-4 p-3 bg-muted/50 rounded-lg border border-border animate-fade-in">
+          <p className="text-xs font-mono text-muted-foreground mb-1">ABOUT THIS ARTWORK</p>
+          <p className="text-sm text-foreground leading-relaxed">
+            {EXAMPLE_IMAGES[selectedIndex].description}
+          </p>
+        </div>
+      )}
 
       <p className="text-xs text-muted-foreground mt-4 text-center font-mono">
         Click any sample to see AI analysis in action

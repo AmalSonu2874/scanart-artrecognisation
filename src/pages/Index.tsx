@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { useLocation } from "react-router-dom";
 import { Scan, Share2, GitCompare } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
@@ -17,6 +18,7 @@ import ComparisonTool from "@/components/ComparisonTool";
 import { analyzeArtwork, ArtPrediction } from "@/services/artAnalyzer";
 
 const Index = () => {
+  const location = useLocation();
   const [isDark, setIsDark] = useState(true);
   const [isConsoleOpen, setIsConsoleOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
@@ -35,6 +37,31 @@ const Index = () => {
   useEffect(() => {
     document.documentElement.classList.toggle("dark", isDark);
   }, [isDark]);
+
+  // Handle re-analysis from History page
+  useEffect(() => {
+    const state = location.state as { reanalyzeImage?: string; styleName?: string } | null;
+    if (state?.reanalyzeImage) {
+      setCurrentImage(state.reanalyzeImage);
+      setPrediction(null);
+      toast.info(`Re-analyzing ${state.styleName || 'artwork'}...`);
+      // Clear the state to prevent re-triggering
+      window.history.replaceState({}, document.title);
+      // Auto-run analysis
+      setTimeout(async () => {
+        setIsAnalyzing(true);
+        try {
+          const result = await analyzeArtwork(state.reanalyzeImage!);
+          setPrediction(result);
+          toast.success(`Detected: ${result.label}`);
+        } catch (error) {
+          toast.error("Re-analysis failed");
+        } finally {
+          setIsAnalyzing(false);
+        }
+      }, 100);
+    }
+  }, [location.state]);
 
   useEffect(() => {
     const handleKeyPress = (e: KeyboardEvent) => {
@@ -97,7 +124,15 @@ const Index = () => {
       setPrediction(result);
       toast.success(`Detected: ${result.label}`);
       const history = JSON.parse(localStorage.getItem("ikara_history") || "[]");
-      history.unshift({ label: result.label, confidence: result.confidence, description: result.description, timestamp: new Date().toISOString() });
+      // Store imageData (truncated for localStorage limits) for re-analysis
+      const historyItem = { 
+        label: result.label, 
+        confidence: result.confidence, 
+        description: result.description, 
+        timestamp: new Date().toISOString(),
+        imageData: currentImage.substring(0, 50000) // Truncate to prevent localStorage overflow
+      };
+      history.unshift(historyItem);
       localStorage.setItem("ikara_history", JSON.stringify(history.slice(0, 20)));
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : "Analysis failed";

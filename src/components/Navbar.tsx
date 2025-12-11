@@ -1,5 +1,7 @@
-import { Moon, Sun, Terminal, Menu, Settings, Home, Upload, Palette, Info } from "lucide-react";
+import { Moon, Sun, Terminal, Menu, Settings, Home, Upload, Palette, Info, History } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
+
 interface NavbarProps {
   isDark: boolean;
   toggleTheme: () => void;
@@ -8,6 +10,7 @@ interface NavbarProps {
   openMobileMenu: () => void;
   onNavigate: (section: string) => void;
 }
+
 const navLinks = [{
   id: 'home',
   label: 'Home',
@@ -33,6 +36,8 @@ const Navbar = ({
   openMobileMenu,
   onNavigate
 }: NavbarProps) => {
+  const navigate = useNavigate();
+  
   return <nav className="fixed top-0 left-0 right-0 z-50 glass border-b border-border">
       <div className="container mx-auto px-4 py-4 flex items-center justify-between">
         {/* Logo */}
@@ -52,6 +57,10 @@ const Navbar = ({
               <link.icon className="w-4 h-4 mr-2" />
               {link.label}
             </Button>)}
+          <Button variant="ghost" size="sm" onClick={() => navigate('/history')} className="font-mono text-sm hover:bg-muted">
+            <History className="w-4 h-4 mr-2" />
+            History
+          </Button>
         </div>
         
         {/* Actions */}
