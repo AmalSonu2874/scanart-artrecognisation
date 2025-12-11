@@ -59,34 +59,46 @@ const AboutSection = () => {
         </div>
       </div>
 
-      {/* Mission & Vision */}
+      {/* Mission & Vision with artistic shading */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="bento-card animate-fade-in" style={{ animationDelay: '100ms' }}>
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 bg-foreground/10 flex items-center justify-center rounded">
-              <Target className="w-5 h-5" />
+        <div className="relative bento-card animate-fade-in overflow-hidden" style={{ animationDelay: '100ms' }}>
+          {/* Artistic gradient background */}
+          <div className="absolute inset-0 bg-gradient-to-br from-amber-500/10 via-transparent to-orange-500/5" />
+          <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-radial from-yellow-500/10 to-transparent rounded-full -translate-y-1/2 translate-x-1/2" />
+          
+          <div className="relative">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 bg-gradient-to-br from-amber-500/20 to-orange-500/20 flex items-center justify-center rounded border border-amber-500/20">
+                <Target className="w-5 h-5 text-amber-600 dark:text-amber-400" />
+              </div>
+              <h3 className="font-bold text-lg">Our Mission</h3>
             </div>
-            <h3 className="font-bold text-lg">Our Mission</h3>
+            <p className="text-muted-foreground leading-relaxed">
+              To democratize access to art education and appreciation by leveraging artificial intelligence 
+              to help people understand, identify, and learn about India's diverse traditional art forms 
+              that have been practiced for millennia.
+            </p>
           </div>
-          <p className="text-muted-foreground leading-relaxed">
-            To democratize access to art education and appreciation by leveraging artificial intelligence 
-            to help people understand, identify, and learn about India's diverse traditional art forms 
-            that have been practiced for millennia.
-          </p>
         </div>
         
-        <div className="bento-card animate-fade-in" style={{ animationDelay: '150ms' }}>
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 bg-foreground/10 flex items-center justify-center rounded">
-              <Eye className="w-5 h-5" />
+        <div className="relative bento-card animate-fade-in overflow-hidden" style={{ animationDelay: '150ms' }}>
+          {/* Artistic gradient background */}
+          <div className="absolute inset-0 bg-gradient-to-bl from-blue-500/10 via-transparent to-indigo-500/5" />
+          <div className="absolute bottom-0 left-0 w-32 h-32 bg-gradient-radial from-blue-500/10 to-transparent rounded-full translate-y-1/2 -translate-x-1/2" />
+          
+          <div className="relative">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 bg-gradient-to-br from-blue-500/20 to-indigo-500/20 flex items-center justify-center rounded border border-blue-500/20">
+                <Eye className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+              </div>
+              <h3 className="font-bold text-lg">Our Vision</h3>
             </div>
-            <h3 className="font-bold text-lg">Our Vision</h3>
+            <p className="text-muted-foreground leading-relaxed">
+              To become the leading platform for Indian art recognition, contributing to the preservation 
+              of cultural heritage while making art history accessible to everyone, from students to 
+              researchers and art enthusiasts worldwide.
+            </p>
           </div>
-          <p className="text-muted-foreground leading-relaxed">
-            To become the leading platform for Indian art recognition, contributing to the preservation 
-            of cultural heritage while making art history accessible to everyone, from students to 
-            researchers and art enthusiasts worldwide.
-          </p>
         </div>
       </div>
 
@@ -98,44 +110,56 @@ const AboutSection = () => {
         </div>
         
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="bento-card group animate-fade-in" style={{ animationDelay: '200ms' }}>
-            <div className="w-12 h-12 bg-muted flex items-center justify-center mb-4 group-hover:bg-foreground group-hover:text-background transition-colors">
-              <Zap className="w-6 h-6" />
+          <div className="relative bento-card group animate-fade-in overflow-hidden" style={{ animationDelay: '200ms' }}>
+            <div className="absolute inset-0 bg-gradient-to-br from-yellow-500/5 via-transparent to-amber-500/10 group-hover:from-yellow-500/10 group-hover:to-amber-500/20 transition-all" />
+            <div className="relative">
+              <div className="w-12 h-12 bg-gradient-to-br from-yellow-500/20 to-amber-500/20 flex items-center justify-center mb-4 group-hover:from-foreground group-hover:to-foreground group-hover:text-background transition-all rounded">
+                <Zap className="w-6 h-6" />
+              </div>
+              <h4 className="font-bold mb-2">Instant Analysis</h4>
+              <p className="text-sm text-muted-foreground">
+                AI-powered recognition delivers accurate results in under 3 seconds
+              </p>
             </div>
-            <h4 className="font-bold mb-2">Instant Analysis</h4>
-            <p className="text-sm text-muted-foreground">
-              AI-powered recognition delivers accurate results in under 3 seconds
-            </p>
           </div>
           
-          <div className="bento-card group animate-fade-in" style={{ animationDelay: '250ms' }}>
-            <div className="w-12 h-12 bg-muted flex items-center justify-center mb-4 group-hover:bg-foreground group-hover:text-background transition-colors">
-              <Globe className="w-6 h-6" />
+          <div className="relative bento-card group animate-fade-in overflow-hidden" style={{ animationDelay: '250ms' }}>
+            <div className="absolute inset-0 bg-gradient-to-br from-green-500/5 via-transparent to-emerald-500/10 group-hover:from-green-500/10 group-hover:to-emerald-500/20 transition-all" />
+            <div className="relative">
+              <div className="w-12 h-12 bg-gradient-to-br from-green-500/20 to-emerald-500/20 flex items-center justify-center mb-4 group-hover:from-foreground group-hover:to-foreground group-hover:text-background transition-all rounded">
+                <Globe className="w-6 h-6" />
+              </div>
+              <h4 className="font-bold mb-2">Cloud Native</h4>
+              <p className="text-sm text-muted-foreground">
+                Fully cloud-based infrastructure with zero installation required
+              </p>
             </div>
-            <h4 className="font-bold mb-2">Cloud Native</h4>
-            <p className="text-sm text-muted-foreground">
-              Fully cloud-based infrastructure with zero installation required
-            </p>
           </div>
           
-          <div className="bento-card group animate-fade-in" style={{ animationDelay: '300ms' }}>
-            <div className="w-12 h-12 bg-muted flex items-center justify-center mb-4 group-hover:bg-foreground group-hover:text-background transition-colors">
-              <Shield className="w-6 h-6" />
+          <div className="relative bento-card group animate-fade-in overflow-hidden" style={{ animationDelay: '300ms' }}>
+            <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-transparent to-cyan-500/10 group-hover:from-blue-500/10 group-hover:to-cyan-500/20 transition-all" />
+            <div className="relative">
+              <div className="w-12 h-12 bg-gradient-to-br from-blue-500/20 to-cyan-500/20 flex items-center justify-center mb-4 group-hover:from-foreground group-hover:to-foreground group-hover:text-background transition-all rounded">
+                <Shield className="w-6 h-6" />
+              </div>
+              <h4 className="font-bold mb-2">Privacy First</h4>
+              <p className="text-sm text-muted-foreground">
+                Images processed securely with no permanent storage of your data
+              </p>
             </div>
-            <h4 className="font-bold mb-2">Privacy First</h4>
-            <p className="text-sm text-muted-foreground">
-              Images processed securely with no permanent storage of your data
-            </p>
           </div>
           
-          <div className="bento-card group animate-fade-in" style={{ animationDelay: '350ms' }}>
-            <div className="w-12 h-12 bg-muted flex items-center justify-center mb-4 group-hover:bg-foreground group-hover:text-background transition-colors">
-              <BarChart className="w-6 h-6" />
+          <div className="relative bento-card group animate-fade-in overflow-hidden" style={{ animationDelay: '350ms' }}>
+            <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 via-transparent to-pink-500/10 group-hover:from-purple-500/10 group-hover:to-pink-500/20 transition-all" />
+            <div className="relative">
+              <div className="w-12 h-12 bg-gradient-to-br from-purple-500/20 to-pink-500/20 flex items-center justify-center mb-4 group-hover:from-foreground group-hover:to-foreground group-hover:text-background transition-all rounded">
+                <BarChart className="w-6 h-6" />
+              </div>
+              <h4 className="font-bold mb-2">Detailed Insights</h4>
+              <p className="text-sm text-muted-foreground">
+                Comprehensive confidence scores and AI-generated art descriptions
+              </p>
             </div>
-            <h4 className="font-bold mb-2">Detailed Insights</h4>
-            <p className="text-sm text-muted-foreground">
-              Comprehensive confidence scores and AI-generated art descriptions
-            </p>
           </div>
         </div>
       </div>

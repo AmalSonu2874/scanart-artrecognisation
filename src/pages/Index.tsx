@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { Scan, Share2 } from "lucide-react";
+import { Scan, Share2, GitCompare } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import Navbar from "@/components/Navbar";
@@ -12,6 +12,8 @@ import Footer from "@/components/Footer";
 import LoadingScreen from "@/components/LoadingScreen";
 import UISettings from "@/components/UISettings";
 import MobileMenu from "@/components/MobileMenu";
+import ExampleGallery from "@/components/ExampleGallery";
+import ComparisonTool from "@/components/ComparisonTool";
 import { analyzeArtwork, ArtPrediction } from "@/services/artAnalyzer";
 
 const Index = () => {
@@ -19,6 +21,7 @@ const Index = () => {
   const [isConsoleOpen, setIsConsoleOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isComparisonOpen, setIsComparisonOpen] = useState(false);
   const [currentImage, setCurrentImage] = useState<string | null>(null);
   const [currentFile, setCurrentFile] = useState<File | null>(null);
   const [prediction, setPrediction] = useState<ArtPrediction | null>(null);
@@ -60,6 +63,24 @@ const Index = () => {
     setCurrentFile(file);
     setCurrentImage(preview);
     setPrediction(null);
+  };
+
+  const handleExampleSelect = async (imageUrl: string, styleName: string) => {
+    setCurrentImage(imageUrl);
+    setCurrentFile(null);
+    setPrediction(null);
+    toast.info(`Loading ${styleName} example...`);
+    // Auto-analyze example images
+    setIsAnalyzing(true);
+    try {
+      const result = await analyzeArtwork(imageUrl);
+      setPrediction(result);
+      toast.success(`Detected: ${result.label}`);
+    } catch (error) {
+      toast.error("Analysis failed");
+    } finally {
+      setIsAnalyzing(false);
+    }
   };
 
   const handleClearImage = () => {
@@ -122,15 +143,36 @@ const Index = () => {
             <p className="text-muted-foreground">Upload Indian traditional art to identify its style</p>
           </div>
           <ImageUpload onImageSelect={handleImageSelect} onClear={handleClearImage} currentImage={currentImage} />
-          {currentImage && (
-            <div className="flex flex-wrap gap-3 mt-6 justify-center">
-              <Button onClick={runAnalysis} disabled={isAnalyzing} className="hard-shadow font-mono">
-                <Scan className="w-4 h-4 mr-2" />{isAnalyzing ? "Analyzing..." : "Analyze"}
-              </Button>
-              {prediction && <Button variant="secondary" onClick={shareResult} className="hard-shadow-sm font-mono"><Share2 className="w-4 h-4 mr-2" />Share</Button>}
-            </div>
-          )}
-          <div className="mt-6"><PredictionResult prediction={prediction} isLoading={isAnalyzing} onRerun={runAnalysis} imageData={currentImage || undefined} onPredictionUpdate={setPrediction} /></div>
+          
+          {/* Action Buttons */}
+          <div className="flex flex-wrap gap-3 mt-6 justify-center">
+            {currentImage && (
+              <>
+                <Button onClick={runAnalysis} disabled={isAnalyzing} className="hard-shadow font-mono">
+                  <Scan className="w-4 h-4 mr-2" />{isAnalyzing ? "Analyzing..." : "Analyze"}
+                </Button>
+                {prediction && <Button variant="secondary" onClick={shareResult} className="hard-shadow-sm font-mono"><Share2 className="w-4 h-4 mr-2" />Share</Button>}
+              </>
+            )}
+            <Button 
+              variant="outline" 
+              onClick={() => setIsComparisonOpen(true)} 
+              className="font-mono"
+            >
+              <GitCompare className="w-4 h-4 mr-2" />
+              Compare Artworks
+            </Button>
+          </div>
+
+          {/* Prediction Result */}
+          <div className="mt-6">
+            <PredictionResult prediction={prediction} isLoading={isAnalyzing} onRerun={runAnalysis} imageData={currentImage || undefined} onPredictionUpdate={setPrediction} />
+          </div>
+
+          {/* Example Gallery */}
+          <div className="mt-8">
+            <ExampleGallery onSelectImage={handleExampleSelect} />
+          </div>
         </section>
 
         <section ref={aboutRef} className="mb-16"><AboutSection /></section>
@@ -141,6 +183,7 @@ const Index = () => {
       <CommandConsole isOpen={isConsoleOpen} onClose={() => setIsConsoleOpen(false)} onCommand={handleCommand} />
       <UISettings isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />
       <MobileMenu isOpen={isMobileMenuOpen} onClose={() => setIsMobileMenuOpen(false)} onNavigate={handleNavigate} openConsole={() => setIsConsoleOpen(true)} openSettings={() => setIsSettingsOpen(true)} />
+      <ComparisonTool isOpen={isComparisonOpen} onClose={() => setIsComparisonOpen(false)} />
       
       <div className="fixed bottom-4 left-4 text-xs text-muted-foreground font-mono hidden md:block opacity-50">
         U=Upload, T=Theme, C=Console
