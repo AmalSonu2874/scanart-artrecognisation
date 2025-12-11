@@ -29,14 +29,34 @@ const ArtStyleCard = ({
       className="group relative bento-card overflow-hidden p-0 animate-fade-in"
       style={{ animationDelay: `${index * 100}ms` }}
     >
-      {/* Background Image with low opacity */}
+      {/* Background Image with painting visible */}
       <div 
-        className="absolute inset-0 bg-cover bg-center opacity-10 group-hover:opacity-15 transition-opacity duration-500"
+        className="absolute inset-0 bg-cover bg-center opacity-20 group-hover:opacity-30 transition-opacity duration-500"
         style={{ backgroundImage: `url(${imageUrl})` }}
       />
       
-      {/* Gradient Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-t from-card via-card/90 to-card/70" />
+      {/* Artistic gradient overlay with color influence */}
+      <div 
+        className="absolute inset-0"
+        style={{
+          background: `linear-gradient(135deg, 
+            ${colors[0]}15 0%, 
+            transparent 30%, 
+            ${colors[1] || colors[0]}10 70%, 
+            ${colors[2] || colors[0]}20 100%)`
+        }}
+      />
+      
+      {/* Main gradient overlay for text visibility */}
+      <div className="absolute inset-0 bg-gradient-to-t from-card via-card/85 to-card/60" />
+      
+      {/* Decorative corner accent */}
+      <div 
+        className="absolute top-0 right-0 w-24 h-24 opacity-30"
+        style={{
+          background: `radial-gradient(circle at top right, ${colors[0]}40, transparent 70%)`
+        }}
+      />
       
       {/* Content */}
       <div className="relative p-6 h-full flex flex-col">
@@ -58,7 +78,7 @@ const ArtStyleCard = ({
             {colors.map((color, i) => (
               <div 
                 key={i}
-                className="w-4 h-4 rounded-full border border-border"
+                className="w-4 h-4 rounded-full border border-border shadow-sm"
                 style={{ backgroundColor: color }}
                 title={color}
               />
@@ -81,7 +101,10 @@ const ArtStyleCard = ({
             {characteristics.map((char, i) => (
               <span 
                 key={i}
-                className="text-xs px-2 py-1 bg-muted/50 rounded font-mono"
+                className="text-xs px-2 py-1 bg-muted/70 backdrop-blur-sm rounded font-mono border border-border/50"
+                style={{
+                  borderColor: `${colors[i % colors.length]}30`
+                }}
               >
                 {char}
               </span>
