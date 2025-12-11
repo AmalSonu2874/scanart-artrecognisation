@@ -1,21 +1,6 @@
-import { 
-  Info, 
-  Database, 
-  Cpu, 
-  Layers, 
-  Zap, 
-  Globe, 
-  Shield, 
-  BarChart,
-  Brain,
-  Eye,
-  Target,
-  Sparkles
-} from "lucide-react";
-
+import { Info, Database, Cpu, Layers, Zap, Globe, Shield, BarChart, Brain, Eye, Target, Sparkles } from "lucide-react";
 const AboutSection = () => {
-  return (
-    <div className="space-y-8">
+  return <div className="space-y-8">
       {/* Hero About Card */}
       <div className="relative overflow-hidden bento-card p-8 md:p-10 animate-fade-in">
         <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-bl from-foreground/5 to-transparent rounded-full -translate-y-1/2 translate-x-1/2" />
@@ -61,7 +46,9 @@ const AboutSection = () => {
 
       {/* Mission & Vision with artistic shading */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="relative bento-card animate-fade-in overflow-hidden" style={{ animationDelay: '100ms' }}>
+        <div className="relative bento-card animate-fade-in overflow-hidden" style={{
+        animationDelay: '100ms'
+      }}>
           {/* Artistic gradient background */}
           <div className="absolute inset-0 bg-gradient-to-br from-amber-500/10 via-transparent to-orange-500/5" />
           <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-radial from-yellow-500/10 to-transparent rounded-full -translate-y-1/2 translate-x-1/2" />
@@ -81,7 +68,9 @@ const AboutSection = () => {
           </div>
         </div>
         
-        <div className="relative bento-card animate-fade-in overflow-hidden" style={{ animationDelay: '150ms' }}>
+        <div className="relative bento-card animate-fade-in overflow-hidden" style={{
+        animationDelay: '150ms'
+      }}>
           {/* Artistic gradient background */}
           <div className="absolute inset-0 bg-gradient-to-bl from-blue-500/10 via-transparent to-indigo-500/5" />
           <div className="absolute bottom-0 left-0 w-32 h-32 bg-gradient-radial from-blue-500/10 to-transparent rounded-full translate-y-1/2 -translate-x-1/2" />
@@ -110,7 +99,9 @@ const AboutSection = () => {
         </div>
         
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="relative bento-card group animate-fade-in overflow-hidden" style={{ animationDelay: '200ms' }}>
+          <div className="relative bento-card group animate-fade-in overflow-hidden" style={{
+          animationDelay: '200ms'
+        }}>
             <div className="absolute inset-0 bg-gradient-to-br from-yellow-500/5 via-transparent to-amber-500/10 group-hover:from-yellow-500/10 group-hover:to-amber-500/20 transition-all" />
             <div className="relative">
               <div className="w-12 h-12 bg-gradient-to-br from-yellow-500/20 to-amber-500/20 flex items-center justify-center mb-4 group-hover:from-foreground group-hover:to-foreground group-hover:text-background transition-all rounded">
@@ -123,7 +114,9 @@ const AboutSection = () => {
             </div>
           </div>
           
-          <div className="relative bento-card group animate-fade-in overflow-hidden" style={{ animationDelay: '250ms' }}>
+          <div className="relative bento-card group animate-fade-in overflow-hidden" style={{
+          animationDelay: '250ms'
+        }}>
             <div className="absolute inset-0 bg-gradient-to-br from-green-500/5 via-transparent to-emerald-500/10 group-hover:from-green-500/10 group-hover:to-emerald-500/20 transition-all" />
             <div className="relative">
               <div className="w-12 h-12 bg-gradient-to-br from-green-500/20 to-emerald-500/20 flex items-center justify-center mb-4 group-hover:from-foreground group-hover:to-foreground group-hover:text-background transition-all rounded">
@@ -136,7 +129,9 @@ const AboutSection = () => {
             </div>
           </div>
           
-          <div className="relative bento-card group animate-fade-in overflow-hidden" style={{ animationDelay: '300ms' }}>
+          <div className="relative bento-card group animate-fade-in overflow-hidden" style={{
+          animationDelay: '300ms'
+        }}>
             <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-transparent to-cyan-500/10 group-hover:from-blue-500/10 group-hover:to-cyan-500/20 transition-all" />
             <div className="relative">
               <div className="w-12 h-12 bg-gradient-to-br from-blue-500/20 to-cyan-500/20 flex items-center justify-center mb-4 group-hover:from-foreground group-hover:to-foreground group-hover:text-background transition-all rounded">
@@ -149,7 +144,9 @@ const AboutSection = () => {
             </div>
           </div>
           
-          <div className="relative bento-card group animate-fade-in overflow-hidden" style={{ animationDelay: '350ms' }}>
+          <div className="relative bento-card group animate-fade-in overflow-hidden" style={{
+          animationDelay: '350ms'
+        }}>
             <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 via-transparent to-pink-500/10 group-hover:from-purple-500/10 group-hover:to-pink-500/20 transition-all" />
             <div className="relative">
               <div className="w-12 h-12 bg-gradient-to-br from-purple-500/20 to-pink-500/20 flex items-center justify-center mb-4 group-hover:from-foreground group-hover:to-foreground group-hover:text-background transition-all rounded">
@@ -172,7 +169,9 @@ const AboutSection = () => {
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="bento-card animate-fade-in" style={{ animationDelay: '400ms' }}>
+          <div className="bento-card animate-fade-in" style={{
+          animationDelay: '400ms'
+        }}>
             <div className="flex items-center gap-2 mb-4">
               <Database className="w-4 h-4 text-muted-foreground" />
               <span className="text-xs font-mono text-muted-foreground">MODEL</span>
@@ -198,7 +197,9 @@ const AboutSection = () => {
             </ul>
           </div>
           
-          <div className="bento-card animate-fade-in" style={{ animationDelay: '450ms' }}>
+          <div className="bento-card animate-fade-in" style={{
+          animationDelay: '450ms'
+        }}>
             <div className="flex items-center gap-2 mb-4">
               <Cpu className="w-4 h-4 text-muted-foreground" />
               <span className="text-xs font-mono text-muted-foreground">STACK</span>
@@ -224,7 +225,9 @@ const AboutSection = () => {
             </ul>
           </div>
           
-          <div className="bento-card animate-fade-in" style={{ animationDelay: '500ms' }}>
+          <div className="bento-card animate-fade-in" style={{
+          animationDelay: '500ms'
+        }}>
             <div className="flex items-center gap-2 mb-4">
               <Info className="w-4 h-4 text-muted-foreground" />
               <span className="text-xs font-mono text-muted-foreground">CAPABILITIES</span>
@@ -253,38 +256,7 @@ const AboutSection = () => {
       </div>
 
       {/* Supported Art Styles Summary */}
-      <div className="bento-card animate-fade-in" style={{ animationDelay: '550ms' }}>
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-2">
-            <Layers className="w-4 h-4 text-muted-foreground" />
-            <span className="text-sm font-mono text-muted-foreground">SUPPORTED ART STYLES</span>
-          </div>
-          <span className="text-xs font-mono px-2 py-1 bg-muted rounded">8 Categories</span>
-        </div>
-        
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-          {[
-            { name: 'Madhubani', region: 'Bihar' },
-            { name: 'Kerala Mural', region: 'Kerala' },
-            { name: 'Gond', region: 'M.P.' },
-            { name: 'Kangra', region: 'H.P.' },
-            { name: 'Mandana', region: 'Rajasthan' },
-            { name: 'Kalighat', region: 'W.B.' },
-            { name: 'Pichwai', region: 'Rajasthan' },
-            { name: 'Warli', region: 'Maharashtra' },
-          ].map((style, i) => (
-            <div 
-              key={style.name} 
-              className="p-3 bg-muted/50 rounded border border-border/50 hover:bg-muted transition-colors"
-            >
-              <p className="font-medium text-sm">{style.name}</p>
-              <p className="text-xs text-muted-foreground">{style.region}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
+      
+    </div>;
 };
-
 export default AboutSection;
