@@ -1,5 +1,6 @@
-import { X, Home, Upload, Palette, Info, Settings, Terminal } from "lucide-react";
+import { X, Home, Upload, Palette, Info, Settings, Terminal, History } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
 
 interface MobileMenuProps {
   isOpen: boolean;
@@ -17,6 +18,8 @@ const menuItems = [
 ];
 
 const MobileMenu = ({ isOpen, onClose, onNavigate, openConsole, openSettings }: MobileMenuProps) => {
+  const navigate = useNavigate();
+  
   if (!isOpen) return null;
 
   const handleNavigate = (section: string) => {
@@ -54,6 +57,17 @@ const MobileMenu = ({ isOpen, onClose, onNavigate, openConsole, openSettings }: 
               <span className="font-medium">{item.label}</span>
             </button>
           ))}
+          
+          <button
+            onClick={() => {
+              navigate('/history');
+              onClose();
+            }}
+            className="w-full flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-muted transition-colors text-left"
+          >
+            <History className="w-5 h-5 text-muted-foreground" />
+            <span className="font-medium">History</span>
+          </button>
           
           <div className="h-px bg-border my-4" />
           
