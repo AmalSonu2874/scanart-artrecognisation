@@ -126,15 +126,29 @@
   }
   
   .hover-lift {
-    @apply transition-transform duration-200;
+    @apply transition-all duration-300;
   }
   
   .hover-lift:hover {
-    transform: translateY(-4px);
+    transform: translateY(-4px) translateZ(20px);
   }
   
+  /* Enhanced 3D bento card */
   .bento-card {
-    @apply bg-card border border-border p-6 hard-shadow hover-lift relative overflow-hidden;
+    @apply bg-card border border-border p-6 relative overflow-hidden;
+    transform-style: preserve-3d;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 
+      6px 6px 0px hsl(var(--shadow-color)),
+      0 20px 40px hsl(var(--shadow-color) / 0.1);
+  }
+  
+  .bento-card:hover {
+    transform: translateY(-8px) rotateX(2deg) rotateY(-2deg) scale(1.02);
+    box-shadow: 
+      8px 8px 0px hsl(var(--shadow-color)),
+      0 30px 60px hsl(var(--shadow-color) / 0.15),
+      0 0 30px hsl(var(--artistic-warm) / 0.1);
   }
   
   /* Artistic shade overlay for cards */
@@ -147,13 +161,42 @@
     bottom: 0;
     background: linear-gradient(
       135deg,
-      hsl(var(--artistic-warm) / 0.03) 0%,
+      hsl(var(--artistic-warm) / 0.05) 0%,
       transparent 30%,
-      hsl(var(--artistic-cool) / 0.02) 60%,
-      hsl(var(--artistic-accent) / 0.03) 100%
+      hsl(var(--artistic-cool) / 0.03) 60%,
+      hsl(var(--artistic-accent) / 0.05) 100%
     );
     pointer-events: none;
     z-index: 0;
+    transition: opacity 0.3s;
+  }
+  
+  .bento-card:hover::before {
+    opacity: 1.5;
+  }
+  
+  /* 3D shine effect on hover */
+  .bento-card::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+      45deg,
+      transparent 40%,
+      hsl(var(--foreground) / 0.03) 50%,
+      transparent 60%
+    );
+    transform: rotate(45deg) translateY(-100%);
+    transition: transform 0.6s;
+    pointer-events: none;
+    z-index: 2;
+  }
+  
+  .bento-card:hover::after {
+    transform: rotate(45deg) translateY(100%);
   }
   
   .bento-card > * {
@@ -185,6 +228,12 @@
       hsl(var(--artistic-accent) / 0.3)
     ) 1;
   }
+  
+  /* 3D Section styling */
+  .section-3d {
+    transform-style: preserve-3d;
+    perspective: 1000px;
+  }
 }
 
 @layer utilities {
@@ -203,6 +252,10 @@
   /* 3D transforms */
   .perspective-1000 {
     perspective: 1000px;
+  }
+  
+  .perspective-2000 {
+    perspective: 2000px;
   }
   
   .transform-3d {
@@ -238,7 +291,8 @@
   background: hsl(var(--foreground) / 0.5);
 }
 
-/* Animation keyframes */
+/* ========== ANIMATION KEYFRAMES ========== */
+
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
@@ -259,73 +313,99 @@
   50% { box-shadow: 0 0 20px 5px hsl(var(--primary) / 0.1); }
 }
 
-@keyframes float-slow {
+/* 3D Orb floating animations */
+@keyframes orb-float-1 {
   0%, 100% { 
-    transform: translate(0, 0) rotate(0deg); 
-    opacity: 0.05;
+    transform: translate(0, 0) scale(1); 
   }
   25% { 
-    transform: translate(30px, -30px) rotate(90deg); 
-    opacity: 0.08;
+    transform: translate(50px, -30px) scale(1.1); 
   }
   50% { 
-    transform: translate(0, -50px) rotate(180deg); 
-    opacity: 0.05;
+    transform: translate(20px, -60px) scale(0.95); 
   }
   75% { 
-    transform: translate(-30px, -30px) rotate(270deg); 
-    opacity: 0.08;
+    transform: translate(-30px, -20px) scale(1.05); 
   }
 }
 
-@keyframes float-slow-reverse {
+@keyframes orb-float-2 {
   0%, 100% { 
-    transform: translate(0, 0) rotate(0deg); 
-    opacity: 0.05;
+    transform: translate(0, 0) scale(1); 
   }
   25% { 
-    transform: translate(-20px, 20px) rotate(-90deg); 
-    opacity: 0.08;
+    transform: translate(-40px, 20px) scale(1.05); 
   }
   50% { 
-    transform: translate(0, 40px) rotate(-180deg); 
-    opacity: 0.05;
+    transform: translate(-20px, 50px) scale(0.9); 
   }
   75% { 
-    transform: translate(20px, 20px) rotate(-270deg); 
-    opacity: 0.08;
+    transform: translate(30px, 30px) scale(1.1); 
   }
 }
 
-@keyframes particle {
+@keyframes orb-float-3 {
+  0%, 100% { 
+    transform: translate(-50%, -50%) scale(1) rotate(0deg); 
+  }
+  33% { 
+    transform: translate(-45%, -55%) scale(1.1) rotate(120deg); 
+  }
+  66% { 
+    transform: translate(-55%, -45%) scale(0.95) rotate(240deg); 
+  }
+}
+
+/* 3D Particle animation */
+@keyframes particle-3d {
   0% {
-    transform: translateY(0) translateX(0) scale(1);
+    transform: translateY(0) translateX(0) translateZ(0) scale(1);
     opacity: 0;
   }
   10% {
+    opacity: 0.5;
+  }
+  50% {
+    transform: translateY(-50vh) translateX(30px) translateZ(100px) scale(1.2);
     opacity: 0.3;
   }
   90% {
-    opacity: 0.3;
+    opacity: 0.2;
   }
   100% {
-    transform: translateY(-100vh) translateX(50px) scale(0.5);
+    transform: translateY(-100vh) translateX(-20px) translateZ(-50px) scale(0.5);
     opacity: 0;
   }
 }
 
+/* Float shape animation */
 @keyframes float-shape {
   0%, 100% {
-    transform: translateY(0) translateX(0) rotate(0deg) scale(1);
+    transform: translateY(0) translateX(0) rotate3d(1, 1, 1, 0deg);
   }
   25% {
-    transform: translateY(-20px) translateX(10px) rotate(90deg) scale(1.1);
+    transform: translateY(-25px) translateX(15px) rotate3d(1, 0.5, 0.5, 90deg);
   }
   50% {
-    transform: translateY(-10px) translateX(-10px) rotate(180deg) scale(0.95);
+    transform: translateY(-15px) translateX(-10px) rotate3d(0.5, 1, 0.5, 180deg);
   }
   75% {
-    transform: translateY(-30px) translateX(5px) rotate(270deg) scale(1.05);
+    transform: translateY(-35px) translateX(5px) rotate3d(0.5, 0.5, 1, 270deg);
+  }
+}
+
+/* Light ray animation */
+@keyframes light-ray-sweep {
+  0% {
+    transform: translateX(-100%) rotate(45deg);
+    opacity: 0;
+  }
+  50% {
+    opacity: 0.03;
+  }
+  100% {
+    transform: translateX(200%) rotate(45deg);
+    opacity: 0;
   }
 }
 
@@ -345,46 +425,186 @@
   animation: pulse-glow 2s ease-in-out infinite;
 }
 
-.animate-float-slow {
-  animation: float-slow 20s ease-in-out infinite;
+.animate-orb-float-1 {
+  animation: orb-float-1 25s ease-in-out infinite;
 }
 
-.animate-float-slow-reverse {
-  animation: float-slow-reverse 25s ease-in-out infinite;
+.animate-orb-float-2 {
+  animation: orb-float-2 30s ease-in-out infinite;
 }
 
-.animate-particle {
-  animation: particle 20s linear infinite;
+.animate-orb-float-3 {
+  animation: orb-float-3 35s ease-in-out infinite;
 }
 
-/* 3D Floating shapes */
+.animate-particle-3d {
+  animation: particle-3d 15s linear infinite;
+}
+
+/* ========== 3D SHAPE STYLES ========== */
+
 .floating-shape {
   animation: float-shape 20s ease-in-out infinite;
+  transform-style: preserve-3d;
 }
 
-.shape-triangle {
-  clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
-  background: linear-gradient(135deg, hsl(var(--artistic-warm)), hsl(var(--artistic-accent)));
+/* 3D Cube */
+.shape-3d-cube {
+  position: relative;
+  transform-style: preserve-3d;
+  animation: rotate-3d-slow 20s linear infinite;
 }
 
-.shape-circle {
-  border-radius: 50%;
-  background: linear-gradient(135deg, hsl(var(--artistic-cool)), hsl(var(--artistic-warm)));
-}
-
-.shape-square {
-  background: linear-gradient(135deg, hsl(var(--artistic-accent)), hsl(var(--artistic-cool)));
-  transform: rotate(45deg);
-}
-
-/* 3D Grid pattern */
-.grid-pattern-3d {
+.shape-3d-cube::before,
+.shape-3d-cube::after {
+  content: '';
+  position: absolute;
   width: 100%;
   height: 100%;
+  border: 1px solid hsl(var(--foreground) / 0.2);
+  background: hsl(var(--artistic-warm) / 0.05);
+}
+
+.shape-3d-cube::before {
+  transform: translateZ(20px);
+}
+
+.shape-3d-cube::after {
+  transform: translateZ(-20px);
+}
+
+/* 3D Pyramid */
+.shape-3d-pyramid {
+  clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+  background: linear-gradient(180deg, hsl(var(--artistic-cool) / 0.1), hsl(var(--artistic-cool) / 0.02));
+  border: 1px solid hsl(var(--foreground) / 0.1);
+  animation: rotate-3d-reverse 25s linear infinite;
+}
+
+/* 3D Ring */
+.shape-3d-ring {
+  border: 2px solid hsl(var(--artistic-accent) / 0.15);
+  border-radius: 50%;
+  animation: rotate-3d-ring 15s linear infinite;
+}
+
+/* 3D Diamond */
+.shape-3d-diamond {
+  background: linear-gradient(135deg, hsl(var(--artistic-warm) / 0.08), hsl(var(--artistic-accent) / 0.05));
+  transform: rotate(45deg);
+  border: 1px solid hsl(var(--foreground) / 0.1);
+  animation: rotate-3d-slow 30s linear infinite reverse;
+}
+
+@keyframes rotate-3d-slow {
+  from { transform: rotate3d(1, 1, 1, 0deg); }
+  to { transform: rotate3d(1, 1, 1, 360deg); }
+}
+
+@keyframes rotate-3d-reverse {
+  from { transform: rotate3d(1, -1, 0.5, 0deg); }
+  to { transform: rotate3d(1, -1, 0.5, 360deg); }
+}
+
+@keyframes rotate-3d-ring {
+  from { transform: rotateX(70deg) rotateZ(0deg); }
+  to { transform: rotateX(70deg) rotateZ(360deg); }
+}
+
+/* Wireframe shapes */
+.wireframe-cube {
+  transform-style: preserve-3d;
+  animation: rotate-wireframe 30s linear infinite;
+}
+
+.wireframe-cube::before {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border: 1px solid hsl(var(--foreground) / 0.05);
+  box-shadow: 
+    inset 0 0 0 1px hsl(var(--foreground) / 0.03),
+    0 0 50px hsl(var(--artistic-warm) / 0.05);
+}
+
+.wireframe-octahedron {
+  transform-style: preserve-3d;
+  animation: rotate-wireframe 25s linear infinite reverse;
+}
+
+.wireframe-octahedron::before {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+  border: 1px solid hsl(var(--foreground) / 0.04);
+  background: hsl(var(--artistic-cool) / 0.02);
+}
+
+.wireframe-icosahedron {
+  transform-style: preserve-3d;
+  animation: rotate-wireframe 40s linear infinite;
+}
+
+.wireframe-icosahedron::before {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%);
+  border: 1px solid hsl(var(--foreground) / 0.03);
+  background: hsl(var(--artistic-accent) / 0.02);
+}
+
+@keyframes rotate-wireframe {
+  from { transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg); }
+  to { transform: rotateX(360deg) rotateY(360deg) rotateZ(360deg); }
+}
+
+/* 3D Grid floor */
+.grid-floor {
   background-image: 
-    linear-gradient(hsl(var(--foreground) / 0.1) 1px, transparent 1px),
-    linear-gradient(90deg, hsl(var(--foreground) / 0.1) 1px, transparent 1px);
-  background-size: 60px 60px;
+    linear-gradient(hsl(var(--foreground) / 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, hsl(var(--foreground) / 0.03) 1px, transparent 1px);
+  background-size: 80px 80px;
+  mask-image: linear-gradient(to top, black, transparent 60%);
+  -webkit-mask-image: linear-gradient(to top, black, transparent 60%);
+}
+
+/* Light rays */
+.light-ray {
+  position: absolute;
+  width: 200%;
+  height: 100px;
+  background: linear-gradient(90deg, transparent, hsl(var(--foreground) / 0.02), transparent);
+  transform-origin: center;
+}
+
+.light-ray-1 {
+  top: 20%;
+  left: -50%;
+  animation: light-ray-sweep 15s ease-in-out infinite;
+}
+
+.light-ray-2 {
+  top: 50%;
+  left: -50%;
+  animation: light-ray-sweep 20s ease-in-out infinite;
+  animation-delay: 5s;
+}
+
+.light-ray-3 {
+  top: 80%;
+  left: -50%;
+  animation: light-ray-sweep 18s ease-in-out infinite;
+  animation-delay: 10s;
+}
+
+/* Noise texture */
+.noise-overlay {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
 }
 
 /* Reduced motion */
