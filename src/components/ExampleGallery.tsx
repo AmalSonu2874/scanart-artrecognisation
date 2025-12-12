@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Image, Play, Sparkles } from "lucide-react";
+import { Image, Sparkles } from "lucide-react";
 import { artStyles } from "@/data/artStyles";
 
 // Import gallery images
@@ -62,11 +62,41 @@ const EXAMPLE_IMAGES = [
 
 const ExampleGallery = ({ onSelectImage }: ExampleGalleryProps) => {
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+  const [tiltStyles, setTiltStyles] = useState<{ [key: number]: React.CSSProperties }>({});
 
   const handleSelectExample = (index: number) => {
     setSelectedIndex(index);
     const example = EXAMPLE_IMAGES[index];
     onSelectImage(example.image, example.name);
+  };
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLButtonElement>, index: number) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+    
+    const rotateX = ((y - centerY) / centerY) * -15;
+    const rotateY = ((x - centerX) / centerX) * 15;
+    
+    setTiltStyles(prev => ({
+      ...prev,
+      [index]: {
+        transform: `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.08)`,
+        transition: 'transform 0.1s ease-out'
+      }
+    }));
+  };
+
+  const handleMouseLeave = (index: number) => {
+    setTiltStyles(prev => ({
+      ...prev,
+      [index]: {
+        transform: 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)',
+        transition: 'transform 0.3s ease-out'
+      }
+    }));
   };
 
   return (
@@ -81,17 +111,20 @@ const ExampleGallery = ({ onSelectImage }: ExampleGalleryProps) => {
         </div>
       </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3" style={{ perspective: '1000px' }}>
         {EXAMPLE_IMAGES.map((example, index) => {
           const styleInfo = artStyles.find(s => s.name === example.name);
           return (
             <button
               key={example.name}
               onClick={() => handleSelectExample(index)}
-              className={`group relative aspect-square rounded-lg overflow-hidden border-2 transition-all duration-300 ${
+              onMouseMove={(e) => handleMouseMove(e, index)}
+              onMouseLeave={() => handleMouseLeave(index)}
+              style={tiltStyles[index] || { transform: 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)' }}
+              className={`group relative aspect-square rounded-lg overflow-hidden border-2 transition-shadow duration-300 ${
                 selectedIndex === index 
-                  ? 'border-foreground ring-2 ring-foreground/20' 
-                  : 'border-border hover:border-foreground/50'
+                  ? 'border-foreground ring-2 ring-foreground/20 shadow-lg shadow-foreground/20' 
+                  : 'border-border hover:border-foreground/50 hover:shadow-xl hover:shadow-foreground/10'
               }`}
             >
               {/* Background Image */}
@@ -109,13 +142,6 @@ const ExampleGallery = ({ onSelectImage }: ExampleGalleryProps) => {
               <div className="absolute inset-0 flex flex-col justify-end p-2">
                 <p className="text-xs font-bold text-foreground truncate">{example.name}</p>
                 <p className="text-[10px] text-muted-foreground truncate">{styleInfo?.origin}</p>
-              </div>
-
-              {/* Hover Play Icon */}
-              <div className="absolute inset-0 flex items-center justify-center bg-background/60 opacity-0 group-hover:opacity-100 transition-opacity">
-                <div className="w-10 h-10 bg-foreground rounded-full flex items-center justify-center">
-                  <Play className="w-5 h-5 text-background ml-0.5" />
-                </div>
               </div>
 
               {/* Selected Indicator */}
