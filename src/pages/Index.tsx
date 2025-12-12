@@ -15,6 +15,7 @@ import UISettings from "@/components/UISettings";
 import MobileMenu from "@/components/MobileMenu";
 import ExampleGallery from "@/components/ExampleGallery";
 import ComparisonTool from "@/components/ComparisonTool";
+import Background3D from "@/components/Background3D";
 import { analyzeArtwork, ArtPrediction } from "@/services/artAnalyzer";
 
 const Index = () => {
@@ -45,9 +46,7 @@ const Index = () => {
       setCurrentImage(state.reanalyzeImage);
       setPrediction(null);
       toast.info(`Re-analyzing ${state.styleName || 'artwork'}...`);
-      // Clear the state to prevent re-triggering
       window.history.replaceState({}, document.title);
-      // Auto-run analysis
       setTimeout(async () => {
         setIsAnalyzing(true);
         try {
@@ -97,7 +96,6 @@ const Index = () => {
     setCurrentFile(null);
     setPrediction(null);
     toast.info(`Loading ${styleName} example...`);
-    // Auto-analyze example images
     setIsAnalyzing(true);
     try {
       const result = await analyzeArtwork(imageUrl);
@@ -124,13 +122,12 @@ const Index = () => {
       setPrediction(result);
       toast.success(`Detected: ${result.label}`);
       const history = JSON.parse(localStorage.getItem("ikara_history") || "[]");
-      // Store imageData (truncated for localStorage limits) for re-analysis
       const historyItem = { 
         label: result.label, 
         confidence: result.confidence, 
         description: result.description, 
         timestamp: new Date().toISOString(),
-        imageData: currentImage.substring(0, 50000) // Truncate to prevent localStorage overflow
+        imageData: currentImage.substring(0, 50000)
       };
       history.unshift(historyItem);
       localStorage.setItem("ikara_history", JSON.stringify(history.slice(0, 20)));
@@ -168,10 +165,13 @@ const Index = () => {
   if (showLoading) return <LoadingScreen onComplete={() => setShowLoading(false)} />;
 
   return (
-    <div className="min-h-screen grid-bg">
+    <div className="min-h-screen grid-bg relative">
+      {/* 3D Background Animation */}
+      <Background3D />
+      
       <Navbar isDark={isDark} toggleTheme={toggleTheme} openConsole={() => setIsConsoleOpen(true)} openSettings={() => setIsSettingsOpen(true)} openMobileMenu={() => setIsMobileMenuOpen(true)} onNavigate={handleNavigate} />
       
-      <main className="container mx-auto px-4 pt-28 pb-8">
+      <main className="container mx-auto px-4 pt-28 pb-8 relative z-10">
         <section ref={uploadRef} className="max-w-2xl mx-auto mb-16 animate-fade-in">
           <div className="text-center mb-8">
             <h2 className="text-3xl font-bold mb-2">Analyze Artwork</h2>
@@ -220,7 +220,7 @@ const Index = () => {
       <MobileMenu isOpen={isMobileMenuOpen} onClose={() => setIsMobileMenuOpen(false)} onNavigate={handleNavigate} openConsole={() => setIsConsoleOpen(true)} openSettings={() => setIsSettingsOpen(true)} />
       <ComparisonTool isOpen={isComparisonOpen} onClose={() => setIsComparisonOpen(false)} />
       
-      <div className="fixed bottom-4 left-4 text-xs text-muted-foreground font-mono hidden md:block opacity-50">
+      <div className="fixed bottom-4 left-4 text-xs text-muted-foreground font-mono hidden md:block opacity-50 z-20">
         U=Upload, T=Theme, C=Console
       </div>
     </div>

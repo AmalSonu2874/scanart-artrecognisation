@@ -22,6 +22,7 @@ const ArtStylesGrid = () => {
             characteristics={style.characteristics}
             colors={style.colors}
             imageUrl={style.imageUrl}
+            galleryImage={style.galleryImage}
             index={index}
           />
         ))}
