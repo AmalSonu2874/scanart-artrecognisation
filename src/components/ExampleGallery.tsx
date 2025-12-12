@@ -100,10 +100,10 @@ const ExampleGallery = ({ onSelectImage }: ExampleGalleryProps) => {
   };
 
   return (
-    <div className="bento-card p-6 animate-fade-in">
-      <div className="flex items-center gap-2 mb-4">
-        <div className="w-8 h-8 bg-foreground/10 flex items-center justify-center rounded">
-          <Image className="w-4 h-4" />
+    <div className="bento-card p-6 animate-fade-in-3d perspective-1500">
+      <div className="flex items-center gap-2 mb-4 transform-3d">
+        <div className="w-8 h-8 bg-foreground/10 flex items-center justify-center rounded animate-float-3d">
+          <Image className="w-4 h-4 icon-3d" />
         </div>
         <div>
           <h3 className="font-bold">Example Gallery</h3>
@@ -111,7 +111,7 @@ const ExampleGallery = ({ onSelectImage }: ExampleGalleryProps) => {
         </div>
       </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3" style={{ perspective: '1000px' }}>
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 perspective-2000 transform-3d">
         {EXAMPLE_IMAGES.map((example, index) => {
           const styleInfo = artStyles.find(s => s.name === example.name);
           return (
@@ -120,11 +120,11 @@ const ExampleGallery = ({ onSelectImage }: ExampleGalleryProps) => {
               onClick={() => handleSelectExample(index)}
               onMouseMove={(e) => handleMouseMove(e, index)}
               onMouseLeave={() => handleMouseLeave(index)}
-              style={tiltStyles[index] || { transform: 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)' }}
-              className={`group relative aspect-square rounded-lg overflow-hidden border-2 transition-shadow duration-300 ${
+              style={tiltStyles[index] || { transform: 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1) translateZ(0)' }}
+              className={`group relative aspect-square rounded-lg overflow-hidden border-2 transition-all duration-300 transform-3d backface-hidden ${
                 selectedIndex === index 
-                  ? 'border-foreground ring-2 ring-foreground/20 shadow-lg shadow-foreground/20' 
-                  : 'border-border hover:border-foreground/50 hover:shadow-xl hover:shadow-foreground/10'
+                  ? 'border-foreground ring-2 ring-foreground/20 shadow-2xl shadow-foreground/30' 
+                  : 'border-border hover:border-foreground/50 hover:shadow-2xl hover:shadow-foreground/20'
               }`}
             >
               {/* Background Image */}
@@ -135,11 +135,14 @@ const ExampleGallery = ({ onSelectImage }: ExampleGalleryProps) => {
                 }}
               />
               
+              {/* 3D Depth layer */}
+              <div className="absolute inset-0 bg-gradient-to-br from-transparent via-transparent to-background/30 opacity-0 group-hover:opacity-100 transition-opacity" />
+              
               {/* Gradient Overlay */}
               <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
               
               {/* Content */}
-              <div className="absolute inset-0 flex flex-col justify-end p-2">
+              <div className="absolute inset-0 flex flex-col justify-end p-2 transform-3d">
                 <p className="text-xs font-bold text-foreground truncate">{example.name}</p>
                 <p className="text-[10px] text-muted-foreground truncate">{styleInfo?.origin}</p>
               </div>
@@ -147,9 +150,12 @@ const ExampleGallery = ({ onSelectImage }: ExampleGalleryProps) => {
               {/* Selected Indicator */}
               {selectedIndex === index && (
                 <div className="absolute top-2 right-2">
-                  <Sparkles className="w-4 h-4 text-foreground animate-pulse" />
+                  <Sparkles className="w-4 h-4 text-foreground animate-pulse icon-3d" />
                 </div>
               )}
+              
+              {/* 3D shine effect */}
+              <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
             </button>
           );
         })}
@@ -157,7 +163,7 @@ const ExampleGallery = ({ onSelectImage }: ExampleGalleryProps) => {
 
       {/* Description of selected image */}
       {selectedIndex !== null && (
-        <div className="mt-4 p-3 bg-muted/50 rounded-lg border border-border animate-fade-in">
+        <div className="mt-4 p-3 bg-muted/50 rounded-lg border border-border animate-slide-up-3d bento-card">
           <p className="text-xs font-mono text-muted-foreground mb-1">ABOUT THIS ARTWORK</p>
           <p className="text-sm text-foreground leading-relaxed">
             {EXAMPLE_IMAGES[selectedIndex].description}

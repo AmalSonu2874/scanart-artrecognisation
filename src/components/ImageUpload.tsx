@@ -77,7 +77,7 @@ const ImageUpload = ({ onImageSelect, onClear, currentImage }: ImageUploadProps)
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 perspective-1000">
       {!currentImage ? (
         <div
           onDrop={handleDrop}
@@ -85,9 +85,9 @@ const ImageUpload = ({ onImageSelect, onClear, currentImage }: ImageUploadProps)
           onDragLeave={handleDragLeave}
           className={`
             relative border-2 border-dashed rounded p-8 text-center
-            transition-all duration-200 cursor-pointer
+            transition-all duration-300 cursor-pointer upload-3d transform-3d
             ${isDragging 
-              ? "border-foreground bg-accent" 
+              ? "border-foreground bg-accent scale-[1.02] translate-z-20" 
               : "border-border hover:border-foreground/50"
             }
           `}
@@ -101,9 +101,9 @@ const ImageUpload = ({ onImageSelect, onClear, currentImage }: ImageUploadProps)
             className="hidden"
           />
           
-          <div className="flex flex-col items-center gap-4">
-            <div className="w-16 h-16 bg-muted rounded flex items-center justify-center">
-              <Upload className="w-8 h-8 text-muted-foreground" />
+          <div className="flex flex-col items-center gap-4 transform-3d">
+            <div className="w-16 h-16 bg-muted rounded flex items-center justify-center animate-float-3d">
+              <Upload className="w-8 h-8 text-muted-foreground icon-3d" />
             </div>
             <div>
               <p className="font-medium">Drop artwork here or click to upload</p>
@@ -114,8 +114,8 @@ const ImageUpload = ({ onImageSelect, onClear, currentImage }: ImageUploadProps)
           </div>
         </div>
       ) : (
-        <div className="space-y-4">
-          <div className="relative bg-card border border-border rounded overflow-hidden hard-shadow">
+        <div className="space-y-4 transform-3d">
+          <div className="relative bg-card border border-border rounded overflow-hidden image-3d animate-enter-depth">
             <img
               src={currentImage}
               alt="Uploaded artwork"
@@ -125,16 +125,16 @@ const ImageUpload = ({ onImageSelect, onClear, currentImage }: ImageUploadProps)
               variant="secondary"
               size="icon"
               onClick={handleClear}
-              className="absolute top-3 right-3 hard-shadow-sm"
+              className="absolute top-3 right-3 btn-3d"
             >
               <X className="w-4 h-4" />
             </Button>
           </div>
           
           {exifData && (
-            <div className="bg-card border border-border rounded p-4">
+            <div className="bg-card border border-border rounded p-4 bento-card">
               <div className="flex items-center gap-2 mb-3">
-                <FileText className="w-4 h-4 text-muted-foreground" />
+                <FileText className="w-4 h-4 text-muted-foreground icon-3d" />
                 <span className="text-sm font-mono text-muted-foreground">FILE INFO</span>
               </div>
               <div className="grid grid-cols-2 gap-2">
