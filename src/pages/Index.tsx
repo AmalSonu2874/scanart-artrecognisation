@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useLocation } from "react-router-dom";
 import { Scan, Share2, GitCompare } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -16,7 +16,48 @@ import MobileMenu from "@/components/MobileMenu";
 import ExampleGallery from "@/components/ExampleGallery";
 import ComparisonTool from "@/components/ComparisonTool";
 import Background3D from "@/components/Background3D";
+import AnalysisSkeleton from "@/components/AnalysisSkeleton";
 import { analyzeArtwork, ArtPrediction } from "@/services/artAnalyzer";
+
+// Cache for example gallery analysis results
+const EXAMPLE_CACHE_KEY = "ikara_example_cache";
+
+interface ExampleCache {
+  [styleName: string]: {
+    prediction: ArtPrediction;
+    timestamp: number;
+  };
+}
+
+const getExampleCache = (): ExampleCache => {
+  try {
+    return JSON.parse(localStorage.getItem(EXAMPLE_CACHE_KEY) || "{}");
+  } catch {
+    return {};
+  }
+};
+
+const setExampleCache = (styleName: string, prediction: ArtPrediction) => {
+  const cache = getExampleCache();
+  cache[styleName] = {
+    prediction,
+    timestamp: Date.now(),
+  };
+  localStorage.setItem(EXAMPLE_CACHE_KEY, JSON.stringify(cache));
+};
+
+const getCachedPrediction = (styleName: string): ArtPrediction | null => {
+  const cache = getExampleCache();
+  const cached = cache[styleName];
+  if (cached) {
+    // Cache valid for 24 hours
+    const isValid = Date.now() - cached.timestamp < 24 * 60 * 60 * 1000;
+    if (isValid) {
+      return cached.prediction;
+    }
+  }
+  return null;
+};
 
 const Index = () => {
   const location = useLocation();
@@ -91,7 +132,7 @@ const Index = () => {
     setPrediction(null);
   };
 
-  const convertImageToBase64 = async (imageUrl: string): Promise<string> => {
+  const convertImageToBase64 = useCallback(async (imageUrl: string): Promise<string> => {
     const response = await fetch(imageUrl);
     const blob = await response.blob();
     return new Promise((resolve, reject) => {
@@ -100,19 +141,30 @@ const Index = () => {
       reader.onerror = reject;
       reader.readAsDataURL(blob);
     });
-  };
+  }, []);
 
   const handleExampleSelect = async (imageUrl: string, styleName: string) => {
     setCurrentImage(imageUrl);
     setCurrentFile(null);
+    
+    // Check cache first
+    const cachedResult = getCachedPrediction(styleName);
+    if (cachedResult) {
+      setPrediction(cachedResult);
+      toast.success(`${styleName} (cached) - ${Math.round(cachedResult.confidence * 100)}% confidence`);
+      return;
+    }
+    
     setPrediction(null);
-    toast.info(`Loading ${styleName} example...`);
+    toast.info(`Analyzing ${styleName}...`);
     setIsAnalyzing(true);
+    
     try {
-      // Convert image URL to base64 for API
       const base64Data = await convertImageToBase64(imageUrl);
       const result = await analyzeArtwork(base64Data);
       setPrediction(result);
+      // Cache the result
+      setExampleCache(styleName, result);
       toast.success(`Detected: ${result.label}`);
     } catch (error) {
       console.error('Analysis error:', error);
@@ -160,13 +212,17 @@ const Index = () => {
 
   const handleCommand = (command: string): string => {
     const commands: Record<string, string | (() => string)> = {
-      help: "Commands: about, help, reset, theme, version, credits, modelinfo, history, clear, styles, stats, shortcuts, export, time, echo",
+      help: "Commands: about, help, reset, theme, version, credits, modelinfo, history, clear, styles, stats, shortcuts, export, time, echo, clearcache",
       about: "IKARA - Indian Knowledge & Artistry Recognition Algorithm. AI-powered classifier for 8 Indian art styles.",
       reset: () => { handleClearImage(); return "Cleared."; },
       theme: () => { toggleTheme(); return `Theme: ${!isDark ? "dark" : "light"}`; },
       version: "Lovable AI Vision v1.0 | google/gemini-2.5-flash",
       credits: "Created by Cresvero\nhttps://amalsonu2874.github.io/cresvero.tech/",
       modelinfo: "Model: Lovable AI Vision\nClasses: 8 Indian Art Styles",
+      clearcache: () => {
+        localStorage.removeItem(EXAMPLE_CACHE_KEY);
+        return "Example cache cleared.";
+      },
       history: () => {
         const h = JSON.parse(localStorage.getItem("ikara_history") || "[]");
         return h.length ? h.slice(0, 5).map((x: any) => `${x.label} (${Math.round(x.confidence * 100)}%)`).join("\n") : "No history.";
@@ -213,9 +269,13 @@ const Index = () => {
             </Button>
           </div>
 
-          {/* Prediction Result */}
+          {/* Prediction Result with Enhanced Skeleton */}
           <div className="mt-6">
-            <PredictionResult prediction={prediction} isLoading={isAnalyzing} onRerun={runAnalysis} imageData={currentImage || undefined} onPredictionUpdate={setPrediction} />
+            {isAnalyzing ? (
+              <AnalysisSkeleton />
+            ) : (
+              <PredictionResult prediction={prediction} isLoading={false} onRerun={runAnalysis} imageData={currentImage || undefined} onPredictionUpdate={setPrediction} />
+            )}
           </div>
 
           {/* Example Gallery */}
