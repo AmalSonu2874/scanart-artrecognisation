@@ -91,6 +91,17 @@ const Index = () => {
     setPrediction(null);
   };
 
+  const convertImageToBase64 = async (imageUrl: string): Promise<string> => {
+    const response = await fetch(imageUrl);
+    const blob = await response.blob();
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => resolve(reader.result as string);
+      reader.onerror = reject;
+      reader.readAsDataURL(blob);
+    });
+  };
+
   const handleExampleSelect = async (imageUrl: string, styleName: string) => {
     setCurrentImage(imageUrl);
     setCurrentFile(null);
@@ -98,10 +109,13 @@ const Index = () => {
     toast.info(`Loading ${styleName} example...`);
     setIsAnalyzing(true);
     try {
-      const result = await analyzeArtwork(imageUrl);
+      // Convert image URL to base64 for API
+      const base64Data = await convertImageToBase64(imageUrl);
+      const result = await analyzeArtwork(base64Data);
       setPrediction(result);
       toast.success(`Detected: ${result.label}`);
     } catch (error) {
+      console.error('Analysis error:', error);
       toast.error("Analysis failed");
     } finally {
       setIsAnalyzing(false);
