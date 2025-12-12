@@ -8,6 +8,7 @@ interface ArtStyleCardProps {
   characteristics: string[];
   colors: string[];
   imageUrl: string;
+  galleryImage?: string;
   index: number;
 }
 
@@ -18,21 +19,28 @@ const ArtStyleCard = ({
   characteristics, 
   colors,
   imageUrl,
+  galleryImage,
   index 
 }: ArtStyleCardProps) => {
   const searchOnGoogle = () => {
     window.open(`https://www.google.com/search?q=${encodeURIComponent(name + " Indian art style")}`, "_blank");
   };
 
+  // Use gallery image if available, otherwise fall back to imageUrl
+  const backgroundImage = galleryImage || imageUrl;
+
   return (
     <div 
       className="group relative bento-card overflow-hidden p-0 animate-fade-in"
       style={{ animationDelay: `${index * 100}ms` }}
     >
-      {/* Background Image with painting visible */}
+      {/* Background Image with gallery painting */}
       <div 
-        className="absolute inset-0 bg-cover bg-center opacity-20 group-hover:opacity-30 transition-opacity duration-500"
-        style={{ backgroundImage: `url(${imageUrl})` }}
+        className="absolute inset-0 bg-cover bg-center opacity-15 group-hover:opacity-25 transition-opacity duration-500 scale-110 group-hover:scale-105"
+        style={{ 
+          backgroundImage: `url(${backgroundImage})`,
+          filter: 'blur(0.5px)'
+        }}
       />
       
       {/* Artistic gradient overlay with color influence */}
@@ -40,21 +48,28 @@ const ArtStyleCard = ({
         className="absolute inset-0"
         style={{
           background: `linear-gradient(135deg, 
-            ${colors[0]}15 0%, 
-            transparent 30%, 
-            ${colors[1] || colors[0]}10 70%, 
+            ${colors[0]}20 0%, 
+            transparent 25%, 
+            ${colors[1] || colors[0]}15 50%, 
+            transparent 75%,
             ${colors[2] || colors[0]}20 100%)`
         }}
       />
       
       {/* Main gradient overlay for text visibility */}
-      <div className="absolute inset-0 bg-gradient-to-t from-card via-card/85 to-card/60" />
+      <div className="absolute inset-0 bg-gradient-to-t from-card via-card/90 to-card/70" />
       
-      {/* Decorative corner accent */}
+      {/* Decorative corner accents */}
       <div 
-        className="absolute top-0 right-0 w-24 h-24 opacity-30"
+        className="absolute top-0 right-0 w-32 h-32 opacity-40"
         style={{
-          background: `radial-gradient(circle at top right, ${colors[0]}40, transparent 70%)`
+          background: `radial-gradient(circle at top right, ${colors[0]}30, transparent 60%)`
+        }}
+      />
+      <div 
+        className="absolute bottom-0 left-0 w-24 h-24 opacity-30"
+        style={{
+          background: `radial-gradient(circle at bottom left, ${colors[1] || colors[0]}25, transparent 60%)`
         }}
       />
       
@@ -78,7 +93,7 @@ const ArtStyleCard = ({
             {colors.map((color, i) => (
               <div 
                 key={i}
-                className="w-4 h-4 rounded-full border border-border shadow-sm"
+                className="w-4 h-4 rounded-full border border-border shadow-sm transition-transform hover:scale-125"
                 style={{ backgroundColor: color }}
                 title={color}
               />
@@ -101,9 +116,9 @@ const ArtStyleCard = ({
             {characteristics.map((char, i) => (
               <span 
                 key={i}
-                className="text-xs px-2 py-1 bg-muted/70 backdrop-blur-sm rounded font-mono border border-border/50"
+                className="text-xs px-2 py-1 bg-muted/70 backdrop-blur-sm rounded font-mono border border-border/50 transition-colors hover:bg-muted"
                 style={{
-                  borderColor: `${colors[i % colors.length]}30`
+                  borderColor: `${colors[i % colors.length]}40`
                 }}
               >
                 {char}
