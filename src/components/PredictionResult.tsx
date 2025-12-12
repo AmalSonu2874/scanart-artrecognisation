@@ -92,15 +92,15 @@ const PredictionResult = ({ prediction, isLoading, onRerun, imageData, onPredict
   const sortedPredictions = [...allPredictions].sort((a, b) => b.confidence - a.confidence);
 
   return (
-    <div className="bg-card border border-border rounded p-6 hard-shadow animate-slide-up">
-      <div className="flex items-center justify-between mb-6">
+    <div className="bg-card border border-border rounded p-6 bento-card animate-slide-up-3d perspective-1000">
+      <div className="flex items-center justify-between mb-6 transform-3d">
         <div className="flex items-center gap-2">
-          <Sparkles className="w-4 h-4 text-muted-foreground" />
+          <Sparkles className="w-4 h-4 text-muted-foreground icon-3d animate-float-3d" />
           <span className="text-sm font-mono text-muted-foreground">
             {correctionApplied ? "CORRECTED RESULT" : "AI PREDICTION"}
           </span>
           {correctionApplied && (
-            <span className="text-xs bg-green-500/20 text-green-600 px-2 py-0.5 rounded font-mono">
+            <span className="text-xs bg-green-500/20 text-green-600 px-2 py-0.5 rounded font-mono animate-pulse-3d">
               VERIFIED
             </span>
           )}
@@ -111,30 +111,32 @@ const PredictionResult = ({ prediction, isLoading, onRerun, imageData, onPredict
             size="icon"
             onClick={() => setAudioEnabled(!audioEnabled)}
             title="Toggle Audio Feedback"
+            className="btn-3d"
           >
-            {audioEnabled ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
+            {audioEnabled ? <Volume2 className="w-4 h-4 icon-3d" /> : <VolumeX className="w-4 h-4 icon-3d" />}
           </Button>
           <Button
             variant="ghost"
             size="icon"
             onClick={onRerun}
             title="Re-run Prediction"
+            className="btn-3d"
           >
-            <RefreshCw className="w-4 h-4" />
+            <RefreshCw className="w-4 h-4 icon-3d" />
           </Button>
         </div>
       </div>
 
-      <div className="space-y-6">
+      <div className="space-y-6 transform-3d">
         {/* Main Result */}
-        <div className={`text-center py-4 border rounded bg-background ${
-          correctionApplied ? 'border-green-500/50' : 'border-border'
+        <div className={`text-center py-4 border rounded bg-background stats-3d ${
+          correctionApplied ? 'border-green-500/50 animate-glow-3d' : 'border-border'
         }`}>
           <p className="text-sm text-muted-foreground mb-2">Detected Art Style</p>
-          <h2 className="text-3xl font-bold tracking-tight">{prediction.label}</h2>
+          <h2 className="text-3xl font-bold tracking-tight text-3d">{prediction.label}</h2>
           <div className="mt-4 flex items-center justify-center gap-4">
-            <div className="text-center">
-              <p className="text-4xl font-mono font-bold">
+            <div className="text-center stats-3d">
+              <p className="text-4xl font-mono font-bold stat-value">
                 {Math.round(prediction.confidence * 100)}%
               </p>
               <p className="text-xs text-muted-foreground">
@@ -146,7 +148,7 @@ const PredictionResult = ({ prediction, isLoading, onRerun, imageData, onPredict
 
         {/* AI Description */}
         {prediction.description && (
-          <div className="bg-muted/50 rounded p-4 border border-border">
+          <div className="bg-muted/50 rounded p-4 border border-border bento-card">
             <p className="text-sm text-muted-foreground mb-1 font-mono">
               {correctionApplied ? "ABOUT THIS ART STYLE" : "AI ANALYSIS"}
             </p>
@@ -155,14 +157,14 @@ const PredictionResult = ({ prediction, isLoading, onRerun, imageData, onPredict
         )}
 
         {/* Confidence Bar */}
-        <div>
+        <div className="transform-3d">
           <div className="flex justify-between text-sm mb-2">
             <span className="text-muted-foreground">Confidence Level</span>
             <span className="font-mono">{Math.round(prediction.confidence * 100)}%</span>
           </div>
           <Progress 
             value={prediction.confidence * 100} 
-            className={`h-3 ${correctionApplied ? '[&>div]:bg-green-500' : ''}`} 
+            className={`h-3 progress-3d ${correctionApplied ? '[&>div]:bg-green-500' : ''}`} 
           />
         </div>
 
@@ -180,9 +182,9 @@ const PredictionResult = ({ prediction, isLoading, onRerun, imageData, onPredict
             variant="secondary"
             size="sm"
             onClick={() => setShowGraph(!showGraph)}
-            className="font-mono"
+            className="font-mono btn-3d"
           >
-            <BarChart3 className="w-4 h-4 mr-2" />
+            <BarChart3 className="w-4 h-4 mr-2 icon-3d" />
             {showGraph ? "Hide" : "Show"} Graph
           </Button>
           <Button
@@ -190,9 +192,9 @@ const PredictionResult = ({ prediction, isLoading, onRerun, imageData, onPredict
             size="sm"
             onClick={speakResult}
             disabled={!audioEnabled}
-            className="font-mono"
+            className="font-mono btn-3d"
           >
-            <Volume2 className="w-4 h-4 mr-2" />
+            <Volume2 className="w-4 h-4 mr-2 icon-3d" />
             Read Result
           </Button>
           {!correctionApplied && (
@@ -200,9 +202,9 @@ const PredictionResult = ({ prediction, isLoading, onRerun, imageData, onPredict
               variant="outline"
               size="sm"
               onClick={() => setShowFeedback(true)}
-              className="font-mono text-destructive hover:text-destructive"
+              className="font-mono text-destructive hover:text-destructive btn-3d"
             >
-              <AlertTriangle className="w-4 h-4 mr-2" />
+              <AlertTriangle className="w-4 h-4 mr-2 icon-3d" />
               Raise Error
             </Button>
           )}
@@ -219,17 +221,17 @@ const PredictionResult = ({ prediction, isLoading, onRerun, imageData, onPredict
 
         {/* Confidence Graph */}
         {showGraph && (
-          <div className="space-y-3 pt-4 border-t border-border animate-fade-in">
+          <div className="space-y-3 pt-4 border-t border-border animate-fade-in-3d perspective-1000">
             <p className="text-sm font-mono text-muted-foreground">ALL PREDICTIONS</p>
-            {sortedPredictions.map(({ label, confidence }) => (
-              <div key={label} className="space-y-1">
+            {sortedPredictions.map(({ label, confidence }, index) => (
+              <div key={label} className="space-y-1 transform-3d hover-3d-lift transition-all" style={{ animationDelay: `${index * 50}ms` }}>
                 <div className="flex justify-between text-sm">
                   <span className={label === prediction.label ? "font-bold" : ""}>
                     {label}
                   </span>
                   <span className="font-mono">{Math.round(confidence * 100)}%</span>
                 </div>
-                <div className="h-2 bg-muted rounded overflow-hidden">
+                <div className="h-2 bg-muted rounded overflow-hidden progress-3d">
                   <div
                     className={`h-full transition-all duration-500 ${
                       label === prediction.label && correctionApplied 
